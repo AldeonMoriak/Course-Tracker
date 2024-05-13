@@ -2,7 +2,7 @@
   <div class="flex justify-between w-full">
     <div class="w-3/4">
       <div class="w-full">
-        <VideoPlayer :video-id="selectedVideo" />
+        <VideoPlayer :key="selectedVideo" :video-id="selectedVideo" />
       </div>
       <div class="">
         <div class="text-black font-bold text-2xl pb-5">{{ selectedVideo }}</div>
