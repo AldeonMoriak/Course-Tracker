@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxtjs/tailwindcss": "^6.12.0",
     "nuxt": "^3.11.2",
     "plyr": "^3.7.8",
     "videojs-youtube": "^3.0.1",
