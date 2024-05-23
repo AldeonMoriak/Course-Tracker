@@ -1,0 +1,24 @@
+<script setup lang="ts">
+const user = useSupabaseUser();
+
+// Get redirect path from cookies
+const cookieName = useRuntimeConfig().public.supabase.cookieName;
+const redirectPath = useCookie(`${cookieName}-redirect-path`).value;
+
+watch(
+  user,
+  () => {
+    if (user.value) {
+      // Clear cookie
+      console.log(cookieName, redirectPath);
+      useCookie(`${cookieName}-redirect-path`).value = null;
+      // Redirect to path
+      return navigateTo(redirectPath || '/');
+    }
+  },
+  { immediate: true }
+);
+</script>
+<template>
+  <div class="mx-auto">Waiting for login...</div>
+</template>
