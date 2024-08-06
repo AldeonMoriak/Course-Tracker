@@ -14,4 +14,5 @@ export type Video = {
   source: 'youtube' | 'vimeo';
   thumbnail: string;
   title: string;
+  user_id: string;
 };

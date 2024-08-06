@@ -126,6 +126,7 @@ const initialVideo: Video = {
   thumbnail: '',
   title: '',
   course_id: '',
+  user_id: session.value!.user.id,
 } as const;
 const tempVideo = ref<Video>({ ...initialVideo });
 
