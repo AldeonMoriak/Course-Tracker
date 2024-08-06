@@ -2,14 +2,26 @@
   <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 flex gap-4 flex-col">
     <label class="block text-sm text-gray-600">
       Course Name
-      <input type="text"
+      <input type="text" v-model="course.name"
         class="block w-full rounded-md border-gray-300 bg-gray-100 px-4 py-2 text-gray-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
     </label>
     <label class="block text-sm text-gray-600">
       Course Description
-      <textarea type="text"
+      <textarea type="text" v-model="course.description"
         class="block w-full rounded-md border-gray-300 bg-gray-100 px-4 py-2 text-gray-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
     </label>
+    <div class="flex flex-wrap gap-4" v-if="course?.videos.length">
+      <div class="w-72 rounded bg-blue-100 p-2" v-for="video in course.videos" :key="video.link">
+        <NuxtImg :src="video.thumbnail" />
+        <div>{{ video.title }}</div>
+      </div>
+    </div>
+    <div v-else class="text-red-400">
+      No Videos Added yet. Add by clicking on "+" button on the bottom right side of your browser
+    </div>
+    <button
+      class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-700 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto sm:text-sm mb-3"
+      @click="() => addCourse()">Add Course</button>
     <Teleport to="body">
       <div v-if="isModalShown">
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
@@ -37,12 +49,15 @@
           </div>
           <div class="h-20"></div>
           <div class="max-w-2xl mx-auto flex gap-4">
-            <button
+            <button v-if="tempVideo.thumbnail"
+              class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-700 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto sm:text-sm mb-3"
+              @click="() => addVideo()">Add Video</button>
+            <button v-else
               class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto sm:text-sm mb-3"
               @click="() => checkURL()">Check URL</button>
             <button
               class="inline-flex w-full justify-center rounded-md border border-transparent bg-gray-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto sm:text-sm mb-3"
-              @click="() => isModalShown = false">Close</button>
+              @click="() => closeModal()">Close</button>
           </div>
         </div>
       </div>
@@ -58,29 +73,60 @@
 
 <script setup lang="ts">
 import type { Course, Video } from '~/types/Types';
+import type { Database } from '~/types/database.types';
+const session = useSupabaseSession()
 
 const isModalShown = ref(false)
-const course = ref<Course | null>(null);
+const course = ref<Course>({
+  id: '',
+  name: '',
+  tags: [],
+  videos: [],
+  description: '',
+  user_id: session.value!.user.id
+});
 const tempURL = ref('')
-const tempVideo = ref<Video>({
+const initialVideo: Video = {
   id: '',
   link: '',
   source: 'youtube',
   thumbnail: '',
   title: '',
-})
+} as const
+const tempVideo = ref<Video>({ ...initialVideo })
 
 watch(tempURL, () => {
-  tempVideo.value = {
-    id: '',
-    link: '',
-    source: 'youtube',
-    thumbnail: '',
-    title: ''
-  }
+  tempVideo.value = { ...initialVideo }
 })
 
-const checkURL = () => {
+function addVideo() {
+  if (!tempVideo.value.thumbnail) return;
+  course.value?.videos.push(tempVideo.value)
+  closeModal()
+}
+
+const client = useSupabaseClient<Database>();
+
+async function addCourse() {
+  if (!course.value.name || !course.value.name || !course.value.videos.length) return;
+  const { data } = await client.from('course').insert({
+    title: course.value.name,
+    description: course.value.description,
+  })
+    .select()
+    .single();
+
+
+
+}
+
+function closeModal() {
+  isModalShown.value = false;
+  tempURL.value = ''
+  tempVideo.value = initialVideo;
+}
+
+function checkURL() {
   function matchYoutubeUrl(url: string) {
     var p = /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
     if (url.match(p)) {
