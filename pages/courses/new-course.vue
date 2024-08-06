@@ -111,7 +111,6 @@ const session = useSupabaseSession();
 
 const isModalShown = ref(false);
 const course = ref<Course>({
-  id: '',
   name: '',
   tags: [],
   videos: [],
@@ -120,7 +119,6 @@ const course = ref<Course>({
 });
 const tempURL = ref('');
 const initialVideo: Video = {
-  id: '',
   video_id: '',
   source: 'youtube',
   thumbnail: '',
