@@ -121,6 +121,7 @@ const initialVideo: Video = {
   source: 'youtube',
   thumbnail: '',
   title: '',
+  course_id: '',
 } as const;
 const tempVideo = ref<Video>({ ...initialVideo });
 

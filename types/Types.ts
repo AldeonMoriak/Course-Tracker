@@ -10,7 +10,7 @@ export type Course = {
 export type Video = {
   id: string;
   course_id: string;
-  link: string;
+  video_id: string;
   source: 'youtube' | 'vimeo';
   thumbnail: string;
   title: string;
