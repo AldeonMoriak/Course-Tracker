@@ -17,7 +17,11 @@
       ></textarea>
     </label>
     <div class="flex flex-wrap gap-4" v-if="course?.videos.length">
-      <div class="w-72 rounded bg-blue-100 p-2" v-for="video in course.videos" :key="video.link">
+      <div
+        class="w-72 rounded bg-blue-100 p-2"
+        v-for="video in course.videos"
+        :key="video.video_id"
+      >
         <NuxtImg :src="video.thumbnail" />
         <div>{{ video.title }}</div>
       </div>
@@ -46,7 +50,7 @@
                   class="block w-full rounded-md border-gray-300 bg-gray-100 px-4 py-2 text-gray-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
               </label>
-              <template v-if="tempVideo.link">
+              <template v-if="tempVideo.video_id">
                 <label class="block text-sm text-gray-600">
                   Video Name
                   <input
@@ -117,7 +121,7 @@ const course = ref<Course>({
 const tempURL = ref('');
 const initialVideo: Video = {
   id: '',
-  link: '',
+  video_id: '',
   source: 'youtube',
   thumbnail: '',
   title: '',
@@ -189,13 +193,13 @@ function checkURL() {
 
   const result = matchYoutubeUrl(tempURL.value);
   if (result) {
-    tempVideo.value.link = result;
+    tempVideo.value.video_id = result;
     tempVideo.value.source = 'youtube';
     tempVideo.value.thumbnail = `https://img.youtube.com/vi/${result}/mqdefault.jpg`;
   } else {
     matchVimeoUrl(tempURL.value).then((vimeoResult) => {
       if (vimeoResult) {
-        tempVideo.value.link = vimeoResult.video_id;
+        tempVideo.value.video_id = vimeoResult.video_id;
         tempVideo.value.source = 'vimeo';
         tempVideo.value.thumbnail = vimeoResult.thumbnail;
         tempVideo.value.title = vimeoResult.title;

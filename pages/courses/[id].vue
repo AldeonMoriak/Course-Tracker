@@ -37,9 +37,9 @@
         <div
           class="cursor-pointer text-lg font-normal hover:text-gray-700"
           v-for="vid in videoList"
-          @click="() => selectVideo(vid.link, vid.source)"
+          @click="() => selectVideo(vid.video_id, vid.source)"
         >
-          {{ vid.link }}
+          {{ vid.video_id }}
         </div>
       </div>
     </div>
@@ -64,8 +64,8 @@ const getThumbnail = async () => {
     const { data } = await useAsyncData('notes', async () =>
       $fetch(`https://vimeo.com/api/v2/video/${selectedVideo.value}.json`)
     );
-		const thumbnail = (data.value as any)[0].thumbnail_medium;
-		console.log((data.value as any)[0].thumbnail_medium)
+    const thumbnail = (data.value as any)[0].thumbnail_medium;
+    console.log((data.value as any)[0].thumbnail_medium);
     selectedVideoThumbnail.value = thumbnail;
   }
 };
@@ -90,67 +90,67 @@ onMounted(async () => {
 const videoList: Array<Video> = [
   {
     id: '0',
-    link: '513415111',
+    video_id: '513415111',
     source: 'vimeo',
   },
   {
     id: '1',
-    link: 'bTqVqk7FSmX',
+    video_id: 'bTqVqk7FSmX',
     source: 'youtube',
   },
   {
     id: '2',
-    link: 'V4a_J38XdHk',
+    video_id: 'V4a_J38XdHk',
     source: 'youtube',
   },
   {
     id: '1',
-    link: 'bTqVqk7FSmY',
+    video_id: 'bTqVqk7FSmY',
     source: 'youtube',
   },
   {
     id: '2',
-    link: 'bTqVqk7FSmD',
+    video_id: 'bTqVqk7FSmD',
     source: 'youtube',
   },
   {
     id: '1',
-    link: 'bTqVqk7FSmY',
+    video_id: 'bTqVqk7FSmY',
     source: 'youtube',
   },
   {
     id: '2',
-    link: 'bTqVqk7FSmY',
+    video_id: 'bTqVqk7FSmY',
     source: 'youtube',
   },
   {
     id: '1',
-    link: 'bTqVqk7FSmY',
+    video_id: 'bTqVqk7FSmY',
     source: 'youtube',
   },
   {
     id: '2',
-    link: 'bTqVqk7FSmY',
+    video_id: 'bTqVqk7FSmY',
     source: 'youtube',
   },
   {
     id: '1',
-    link: 'bTqVqk7FSmY',
+    video_id: 'bTqVqk7FSmY',
     source: 'youtube',
   },
   {
     id: '2',
-    link: 'bTqVqk7FSmY',
+    video_id: 'bTqVqk7FSmY',
     source: 'youtube',
   },
   {
     id: '1',
-    link: 'bTqVqk7FSmY',
+    video_id: 'bTqVqk7FSmY',
     source: 'youtube',
   },
   {
     id: '2',
-    link: 'bTqVqk7FSmY',
+    video_id: 'bTqVqk7FSmY',
     source: 'youtube',
   },
 ];
