@@ -60,7 +60,7 @@ const { data: course } = await client
   .eq('id', route.params.id)
   .single();
 
-selectedVideo.value = course?.video ? course?.video[0] : undefined;
+selectedVideo.value = course?.video.length ? course?.video[0] : undefined;
 
 const selectVideo = (video: Video) => {
   selectedVideo.value = video;
