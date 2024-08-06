@@ -4,7 +4,7 @@
       Course Name
       <input
         type="text"
-        v-model="course.name"
+        v-model="course.title"
         class="block w-full rounded-md border-gray-300 bg-gray-100 px-4 py-2 text-gray-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
       />
     </label>
@@ -111,7 +111,7 @@ const session = useSupabaseSession();
 
 const isModalShown = ref(false);
 const course = ref<Course>({
-  name: '',
+  title: '',
   tags: [],
   videos: [],
   description: '',
@@ -141,11 +141,11 @@ function addVideo() {
 const client = useSupabaseClient<Database>();
 
 async function addCourse() {
-  if (!course.value.name || !course.value.name || !course.value.videos.length) return;
+  if (!course.value.title || !course.value.title || !course.value.videos.length) return;
   const { data } = await client
     .from('course')
     .insert({
-      title: course.value.name,
+      title: course.value.title,
       description: course.value.description,
       user_id: course.value.user_id,
     })

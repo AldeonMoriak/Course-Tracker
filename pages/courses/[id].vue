@@ -2,14 +2,14 @@
   <div class="flex w-full justify-between">
     <div class="w-3/4">
       <div class="w-full">
-        <div :key="selectedVideo">
+        <div :key="selectedVideo.id">
           <vue-plyr ref="plyr">
             <div class="plyr__video-embed">
               <iframe
                 :src="
-                  selectedVideoSource === 'youtube'
-                    ? `https://www.youtube.com/embed/${selectedVideo}?amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1`
-                    : `https://player.vimeo.com/video/${selectedVideo}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media`
+                  selectedVideo.source === 'youtube'
+                    ? `https://www.youtube.com/embed/${selectedVideo.video_id}?amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1`
+                    : `https://player.vimeo.com/video/${selectedVideo.video_id}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media`
                 "
                 allowfullscreen
                 allowtransparency
@@ -20,26 +20,21 @@
         </div>
       </div>
       <div class="">
-        <div class="pb-5 text-2xl font-bold text-black">{{ selectedVideo }}</div>
+        <div class="pb-5 text-2xl font-bold text-black">{{ selectedVideo.title }}</div>
         <Tags :tags="['1', '2']" />
       </div>
       <div class="">
-        <img
-          v-if="selectedVideoSource === 'youtube'"
-          :src="`https://img.youtube.com/vi/${selectedVideo}/mqdefault.jpg`"
-          alt="video thumbnail"
-        />
-        <img v-else :src="selectedVideoThumbnail" alt="video thumbnail" />
+        <img :src="selectedVideo.thumbnail" alt="video thumbnail" />
       </div>
     </div>
     <div class="h-screen w-1/4 bg-gray-100 p-4">
       <div class="flex flex-col gap-3">
         <div
           class="cursor-pointer text-lg font-normal hover:text-gray-700"
-          v-for="vid in videoList"
-          @click="() => selectVideo(vid.video_id, vid.source)"
+          v-for="vid in course?.video"
+          @click="() => selectVideo(vid as any)"
         >
-          {{ vid.video_id }}
+          {{ vid.title }}
         </div>
       </div>
     </div>
@@ -51,32 +46,24 @@ import type { Video } from '@/types/Types';
 import type Plyr from 'plyr';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import type { Database } from '~/types/database.types';
 
-const selectedVideo = ref('bTqVqk7FSmY');
-const selectedVideoSource = ref('513415111');
-const selectedVideoThumbnail = ref('');
+const selectedVideo = ref<any>();
 const route = useRoute();
 // get the course details
 console.log(route.params.id);
 
-const getThumbnail = async () => {
-  if (selectedVideoSource.value === 'vimeo') {
-    const { data } = await useAsyncData('notes', async () =>
-      $fetch(`https://vimeo.com/api/v2/video/${selectedVideo.value}.json`)
-    );
-    const thumbnail = (data.value as any)[0].thumbnail_medium;
-    console.log((data.value as any)[0].thumbnail_medium);
-    selectedVideoThumbnail.value = thumbnail;
-  }
-};
+const client = useSupabaseClient<Database>();
+const { data: course } = await client
+  .from('course')
+  .select('*, video(*)')
+  .eq('id', route.params.id)
+  .single();
 
-watch(selectedVideoSource, () => {
-  getThumbnail();
-});
+selectedVideo.value = course?.video ? course?.video[0] : undefined;
 
-const selectVideo = (link: string, source: 'youtube' | 'vimeo') => {
-  selectedVideo.value = link;
-  selectedVideoSource.value = source;
+const selectVideo = (video: Video) => {
+  selectedVideo.value = video;
 };
 
 const plyr = ref<{ player: Plyr } | null>(null);
@@ -86,72 +73,4 @@ onMounted(async () => {
     plyr.value!.player.on('ready', (event) => console.log('progess', event));
   });
 });
-
-const videoList: Array<Video> = [
-  {
-    id: '0',
-    video_id: '513415111',
-    source: 'vimeo',
-  },
-  {
-    id: '1',
-    video_id: 'bTqVqk7FSmX',
-    source: 'youtube',
-  },
-  {
-    id: '2',
-    video_id: 'V4a_J38XdHk',
-    source: 'youtube',
-  },
-  {
-    id: '1',
-    video_id: 'bTqVqk7FSmY',
-    source: 'youtube',
-  },
-  {
-    id: '2',
-    video_id: 'bTqVqk7FSmD',
-    source: 'youtube',
-  },
-  {
-    id: '1',
-    video_id: 'bTqVqk7FSmY',
-    source: 'youtube',
-  },
-  {
-    id: '2',
-    video_id: 'bTqVqk7FSmY',
-    source: 'youtube',
-  },
-  {
-    id: '1',
-    video_id: 'bTqVqk7FSmY',
-    source: 'youtube',
-  },
-  {
-    id: '2',
-    video_id: 'bTqVqk7FSmY',
-    source: 'youtube',
-  },
-  {
-    id: '1',
-    video_id: 'bTqVqk7FSmY',
-    source: 'youtube',
-  },
-  {
-    id: '2',
-    video_id: 'bTqVqk7FSmY',
-    source: 'youtube',
-  },
-  {
-    id: '1',
-    video_id: 'bTqVqk7FSmY',
-    source: 'youtube',
-  },
-  {
-    id: '2',
-    video_id: 'bTqVqk7FSmY',
-    source: 'youtube',
-  },
-];
 </script>

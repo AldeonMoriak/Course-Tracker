@@ -1,6 +1,6 @@
 export type Course = {
-  name: string;
-  tags: Array<string>;
+  title: string;
+  tags?: Array<string>;
   id?: string;
   videos: Array<Video>;
   description: string;
