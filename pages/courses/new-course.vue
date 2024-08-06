@@ -112,6 +112,7 @@ async function addCourse() {
   const { data } = await client.from('course').insert({
     title: course.value.name,
     description: course.value.description,
+    user_id: course.value.user_id
   })
     .select()
     .single();
