@@ -39,6 +39,15 @@
       <div v-else class="text-red-400">
         No Videos Added yet. Add by clicking on "+" button on the bottom right side of your browser
       </div>
+      <div class="mx-auto">
+        <button
+          class="rounded border border-orange-200 bg-transparent px-4 py-2 text-gray-800 hover:border-orange-400 hover:text-white"
+          @click="() => (isModalShown = true)"
+          title="Add New Video"
+        >
+          Add Video
+        </button>
+      </div>
     </label>
     <button
       class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-green-700 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
