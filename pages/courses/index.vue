@@ -7,51 +7,6 @@
         @click="navigateTo(`/courses/${course.id}`)"
         :course="course"
       />
-      <Card
-        @click="navigateTo('/courses/2')"
-        class="cursor-pointer"
-        :course="{
-          name: 'Programming with Me',
-          tags: ['tag 1', 'tag 2', 'coding'],
-          id: '1',
-        }"
-      />
-      <Card
-        @click="navigateTo('/courses/1')"
-        class="cursor-pointer"
-        :course="{
-          name: 'Drawing with charcoal',
-          tags: ['tag 1', 'tag 2', 'charcoal'],
-          id: '1',
-        }"
-      />
-      <Card
-        @click="navigateTo('/courses/2')"
-        class="cursor-pointer"
-        :course="{
-          name: 'Programming with Me',
-          tags: ['tag 1', 'tag 2', 'coding'],
-          id: '1',
-        }"
-      />
-      <Card
-        @click="navigateTo('/courses/1')"
-        class="cursor-pointer"
-        :course="{
-          name: 'Drawing with charcoal',
-          tags: ['tag 1', 'tag 2', 'charcoal'],
-          id: '1',
-        }"
-      />
-      <Card
-        @click="navigateTo('/courses/2')"
-        class="cursor-pointer"
-        :course="{
-          name: 'Programming with Me',
-          tags: ['tag 1', 'tag 2', 'coding'],
-          id: '1',
-        }"
-      />
     </div>
     <div class="fixed bottom-10 right-10 flex items-center justify-center">
       <button
@@ -66,7 +21,6 @@
 </template>
 
 <script setup lang="ts">
-import type { Course } from '~/types/Types';
 import type { Database } from '~/types/database.types';
 
 const session = useSupabaseSession();
@@ -75,5 +29,8 @@ const client = useSupabaseClient<Database>();
 const { data: courses } = await client
   .from('course')
   .select('*, video(*)')
-  .eq('user_id', session.value!.user.id);
+  .eq('user_id', session.value!.user.id)
+  .order('created_at', {
+    ascending: false,
+  });
 </script>

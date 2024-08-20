@@ -16,19 +16,30 @@
         class="block w-full rounded-md border-gray-300 bg-gray-100 px-4 py-2 text-gray-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
       ></textarea>
     </label>
-    <div class="flex flex-wrap gap-4" v-if="course?.videos.length">
-      <div
-        class="w-72 rounded bg-blue-100 p-2"
-        v-for="video in course.videos"
-        :key="video.video_id"
-      >
-        <NuxtImg :src="video.thumbnail" />
-        <div>{{ video.title }}</div>
+    <!-- <label class="block text-sm text-gray-600"> -->
+    <!--   Tags -->
+    <!--   <input -->
+    <!--     type="text" -->
+    <!--     v-model="course.tags" -->
+    <!--     class="block w-full rounded-md border-gray-300 bg-gray-100 px-4 py-2 text-gray-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" -->
+    <!--   /> -->
+    <!-- </label> -->
+    <label class="block text-sm text-gray-600">
+      Videos
+      <div class="flex flex-wrap gap-4" v-if="course?.videos.length">
+        <div
+          class="w-72 rounded bg-blue-100 p-2"
+          v-for="video in course.videos"
+          :key="video.video_id"
+        >
+          <NuxtImg :src="video.thumbnail" />
+          <div>{{ video.title }}</div>
+        </div>
       </div>
-    </div>
-    <div v-else class="text-red-400">
-      No Videos Added yet. Add by clicking on "+" button on the bottom right side of your browser
-    </div>
+      <div v-else class="text-red-400">
+        No Videos Added yet. Add by clicking on "+" button on the bottom right side of your browser
+      </div>
+    </label>
     <button
       class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-green-700 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
       @click="() => addCourse()"
@@ -142,20 +153,27 @@ const client = useSupabaseClient<Database>();
 
 async function addCourse() {
   if (!course.value.title || !course.value.title || !course.value.videos.length) return;
-  const { data } = await client
-    .from('course')
-    .insert({
-      title: course.value.title,
-      description: course.value.description,
-      user_id: course.value.user_id,
-    })
-    .select()
-    .single();
+  try {
+    const { data } = await client
+      .from('course')
+      .insert({
+        title: course.value.title,
+        description: course.value.description,
+        user_id: course.value.user_id,
+      })
+      .select()
+      .single();
 
-  if (data?.id) {
-    course.value.videos.map((vid) => (vid.course_id = data.id));
+    if (data?.id) {
+      course.value.videos.map((vid) => (vid.course_id = data.id));
 
-    await client.from('video').insert(course.value.videos);
+      await client.from('video').insert(course.value.videos);
+    } else {
+      throw Error('Something went wrong');
+    }
+    navigateTo('/courses');
+  } catch (error: unknown) {
+    console.error(error);
   }
 }
 

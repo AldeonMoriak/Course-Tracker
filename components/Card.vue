@@ -1,9 +1,15 @@
 <template>
-  <div class="m-4 w-1/3 rounded bg-gray-200 p-2">
-    <div class="flex h-72 flex-col gap-y-4">
-      <div class="h-[80%] w-full rounded bg-yellow-300"></div>
+  <div class="m-4 w-1/3 rounded bg-gray-200">
+    <div class="flex h-64 flex-col gap-y-4">
+      <NuxtImg
+        class="h-[80%] w-full rounded object-cover"
+        v-if="course.video.length"
+        :src="course.video[0].thumbnail"
+        fit="cover"
+      />
+      <div v-else class="h-[80%] w-full rounded bg-yellow-300"></div>
       <div class="flex flex-col gap-4">
-        <div class="font-bold text-gray-600">{{ course.title }}</div>
+        <div class="p-2 font-bold text-gray-600">{{ course.title }}</div>
         <Tags :tags="course.tags" />
       </div>
     </div>
@@ -13,6 +19,6 @@
 <script setup lang="ts">
 import type { Course } from '@/types/Types';
 const props = defineProps<{
-  course: Course;
+  course: Course | any;
 }>();
 </script>

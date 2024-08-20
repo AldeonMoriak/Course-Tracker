@@ -20,21 +20,33 @@
         </div>
       </div>
       <div class="">
-        <div class="pb-5 text-2xl font-bold text-black">{{ selectedVideo?.title }}</div>
+        <div class="flex items-center justify-between pb-5">
+          <div class="text-2xl font-bold text-black">{{ selectedVideo?.title }}</div>
+          <div class="flex items-center">
+            <input
+              id="default-checkbox"
+              type="checkbox"
+              @change="changeCheckbox"
+              :checked="selectedVideo.is_watched"
+              class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+            />
+            <label for="default-checkbox" class="ms-2 text-sm font-medium">Watched</label>
+          </div>
+        </div>
         <Tags :tags="['1', '2']" />
       </div>
       <div class="">
-        <img :src="selectedVideo?.thumbnail" alt="video thumbnail" />
+        <div>{{ course?.description }}</div>
       </div>
     </div>
     <div class="h-screen w-1/4 bg-gray-100 p-4">
       <div class="flex flex-col gap-3">
         <div
-          class="cursor-pointer text-lg font-normal hover:text-gray-700"
-          v-for="vid in course?.video"
+          class="line-clamp-1 cursor-pointer text-lg font-normal hover:text-gray-700"
+          v-for="(vid, index) in course?.video"
           @click="() => selectVideo(vid as any)"
         >
-          {{ vid.title }}
+          {{ `${index + 1}- ${vid.title}` }}
         </div>
       </div>
     </div>
@@ -48,10 +60,26 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import type { Database } from '~/types/database.types';
 
-const selectedVideo = ref<any>();
+const selectedVideo = ref();
 const route = useRoute();
 // get the course details
 console.log(route.params.id);
+
+const changeCheckbox = async (event: Event) => {
+  if (!event || !event.target) return;
+  changeIsWatched((event.target as HTMLInputElement).checked);
+};
+
+const changeIsWatched = async (isWatched: boolean) => {
+  const { error } = await client
+    .from('video')
+    .update({ is_watched: isWatched })
+    .eq('id', selectedVideo.value.id);
+  if (!error) {
+    selectedVideo.value.is_watched = isWatched;
+  }
+  isSending.value = false;
+};
 
 const client = useSupabaseClient<Database>();
 const { data: course } = await client
@@ -65,12 +93,18 @@ selectedVideo.value = course?.video.length ? course?.video[0] : undefined;
 const selectVideo = (video: Video) => {
   selectedVideo.value = video;
 };
-
+const isSending = ref(false);
 const plyr = ref<{ player: Plyr } | null>(null);
 onMounted(async () => {
   await nextTick(() => {
-    console.log(plyr.value!.player);
-    plyr.value!.player.on('ready', (event) => console.log('progess', event));
+    //plyr.value!.player.on('ready', (event) => console.log('ready', event));
+    plyr.value!.player.on('timeupdate', (event) => {
+      const progress = event.detail.plyr.currentTime / event.detail.plyr.duration;
+      if (progress > 0.95 && !selectedVideo.value.is_watched && !isSending.value) {
+        isSending.value = true;
+        changeIsWatched(true);
+      }
+    });
   });
 });
 </script>
