@@ -100,7 +100,12 @@ onMounted(async () => {
     //plyr.value!.player.on('ready', (event) => console.log('ready', event));
     plyr.value!.player.on('timeupdate', (event) => {
       const progress = event.detail.plyr.currentTime / event.detail.plyr.duration;
-      if (progress > 0.95 && !selectedVideo.value.is_watched && !isSending.value) {
+      if (
+        selectedVideo.value &&
+        progress > 0.95 &&
+        !selectedVideo.value.is_watched &&
+        !isSending.value
+      ) {
         isSending.value = true;
         changeIsWatched(true);
       }

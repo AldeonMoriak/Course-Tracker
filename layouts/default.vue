@@ -16,7 +16,7 @@
       </ul>
     </nav>
     <div class="mx-auto mt-5 w-full max-w-6xl">
-      <slot />
+      <slot class="text-black" />
     </div>
   </div>
 </template>
