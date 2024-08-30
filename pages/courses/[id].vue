@@ -28,7 +28,7 @@
               type="checkbox"
               @change="changeCheckbox"
               :checked="selectedVideo?.is_watched"
-              class="h-4 w-4 rounded border-gray-300 bg-orange-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-orange-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+              class="h-4 w-4 rounded border-gray-300 bg-orange-50 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-orange-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
             />
             <label for="default-checkbox" class="ms-2 text-sm font-medium">Watched</label>
           </div>
@@ -39,7 +39,7 @@
         <div>{{ course?.description }}</div>
       </div>
     </div>
-    <div class="h-screen w-1/4 bg-orange-100 px-4">
+    <div class="h-screen w-1/4 bg-orange-50 px-4">
       <div class="flex flex-col gap-5">
         <div
           tabindex="0"
