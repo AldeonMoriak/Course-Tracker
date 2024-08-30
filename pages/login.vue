@@ -47,7 +47,7 @@ const signInWithOtp = async () => {
         <div class="bg-gray-50 pb-6 pt-3 sm:flex sm:flex-row">
           <button
             type="submit"
-            class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
+            class="inline-flex w-full justify-center rounded-md border border-transparent bg-orange-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
           >
             Sign In with E-Mail
           </button>

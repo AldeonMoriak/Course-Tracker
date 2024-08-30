@@ -1,17 +1,18 @@
 <template>
   <div
-    class="min-w-360px mx-auto flex min-h-screen flex-col bg-gray-100 text-black transition-all duration-500"
+    class="min-w-360px mx-auto flex min-h-screen flex-col bg-orange-100 text-black transition-all duration-500"
   >
-    <nav class="bg-white px-4 py-2">
+    <nav class="mx-auto max-w-6xl bg-orange-100 px-4 py-2">
       <ul class="flex w-full gap-4 text-black">
         <li>
-          <NuxtLink active-class="underline text-gray-400" to="/">Home</NuxtLink>
+          <NuxtLink exact-active-class="underline text-orange-600" to="/">Home</NuxtLink>
         </li>
         <li>
-          <NuxtLink active-class="underline text-gray-400" to="/notes">Notes</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink active-class="underline text-gray-400" to="/courses/">Courses</NuxtLink>
+          <NuxtLink
+            :class="{ 'text-orange-600 underline': $route.path.startsWith('/courses') }"
+            to="/courses"
+            >Courses</NuxtLink
+          >
         </li>
       </ul>
     </nav>

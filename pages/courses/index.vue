@@ -11,7 +11,7 @@
     </div>
     <div class="fixed bottom-10 right-10 flex items-center justify-center">
       <button
-        class="rounded-full bg-blue-200 px-4 py-2 text-xl text-gray-800 hover:bg-blue-400 hover:text-white"
+        class="rounded-full bg-orange-200 px-4 py-2 text-xl text-orange-800 hover:bg-orange-400 hover:text-white"
         @click="() => navigateTo('/courses/new-course')"
         title="Add New Course"
       >

@@ -7,7 +7,7 @@
         :src="course.video[0].thumbnail ?? undefined"
         fit="cover"
       />
-      <div v-else class="h-[80%] w-full rounded bg-yellow-300"></div>
+      <div v-else class="h-[80%] w-full rounded bg-orange-400"></div>
       <div class="flex flex-col gap-4">
         <div class="p-2 font-bold text-gray-600">{{ course.title }}</div>
         <Tags v-if="course.tags" :tags="course.tags" />
