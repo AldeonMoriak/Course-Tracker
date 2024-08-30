@@ -3,24 +3,6 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
-      category: {
-        Row: {
-          created_at: string | null;
-          id: number;
-          title: string;
-        };
-        Insert: {
-          created_at?: string | null;
-          id?: number;
-          title: string;
-        };
-        Update: {
-          created_at?: string | null;
-          id?: number;
-          title?: string;
-        };
-        Relationships: [];
-      };
       course: {
         Row: {
           created_at: string;
@@ -72,13 +54,13 @@ export type Database = {
         };
         Relationships: [];
       };
-
       video: {
         Row: {
           course_id: string | null;
           created_at: string;
           id: string;
           is_watched: boolean | null;
+          row: number;
           source: string | null;
           thumbnail: string | null;
           title: string | null;
@@ -90,6 +72,7 @@ export type Database = {
           created_at?: string;
           id?: string;
           is_watched?: boolean | null;
+          row?: number | null;
           source?: string | null;
           thumbnail?: string | null;
           title?: string | null;
@@ -101,6 +84,7 @@ export type Database = {
           created_at?: string;
           id?: string;
           is_watched?: boolean | null;
+          row?: number | null;
           source?: string | null;
           thumbnail?: string | null;
           title?: string | null;

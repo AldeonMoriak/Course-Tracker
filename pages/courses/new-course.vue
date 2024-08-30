@@ -24,39 +24,32 @@
     <!--     class="block w-full rounded-md border-gray-300 bg-gray-100 px-4 py-2 text-gray-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" -->
     <!--   /> -->
     <!-- </label> -->
-    <label class="block text-sm text-gray-600">
-      Videos
-      <div class="flex flex-wrap gap-4" v-if="course?.videos.length">
-        <div
-          class="w-72 rounded bg-blue-100 p-2"
-          v-for="video in course.videos"
-          :key="video.video_id"
-        >
-          <NuxtImg :src="video.thumbnail" />
-          <div>{{ video.title }}</div>
-        </div>
+    <label class="text-sm text-gray-600"> Videos </label>
+    <div class="flex flex-wrap gap-4">
+      <div
+        class="w-72 rounded bg-blue-100 p-2"
+        v-for="video in course.video"
+        :key="video.video_id!"
+      >
+        <NuxtImg :src="video.thumbnail!" />
+        <div>{{ video.title }}</div>
       </div>
-      <div v-else class="text-red-400">
-        No Videos Added yet. Add by clicking on "+" button on the bottom right side of your browser
-      </div>
-      <div class="mx-auto">
-        <button
-          class="rounded border border-orange-200 bg-transparent px-4 py-2 text-gray-800 hover:border-orange-400 hover:text-white"
-          @click="() => (isModalShown = true)"
-          title="Add New Video"
-        >
-          Add Video
-        </button>
-      </div>
-    </label>
+      <button
+        class="w-72 bg-orange-50 p-20 text-orange-600 outline-dashed outline-orange-200"
+        :class="{ 'mx-auto': !course?.video?.length }"
+        @click="() => (isModalShown = true)"
+      >
+        + Add Video
+      </button>
+    </div>
     <button
-      class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-green-700 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
+      class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-orange-700 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
       @click="() => addCourse()"
     >
       Add Course
     </button>
     <Teleport to="body">
-      <div v-if="isModalShown">
+      <form @submit.prevent="tempVideo.thumbnail ? addVideo : checkURL" v-if="isModalShown">
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
         <div class="fixed bottom-0 z-50 w-full bg-white">
           <div class="mx-auto max-w-2xl">
@@ -81,7 +74,7 @@
                 </label>
                 <label class="block text-sm text-gray-600">
                   Video Thumbnail
-                  <img :src="tempVideo.thumbnail" alt="video thumbnail" class="pt-4" />
+                  <img :src="tempVideo.thumbnail!" alt="video thumbnail" class="pt-4" />
                 </label>
               </template>
             </div>
@@ -89,38 +82,31 @@
           <div class="h-20"></div>
           <div class="mx-auto flex max-w-2xl gap-4">
             <button
+              type="submit"
               v-if="tempVideo.thumbnail"
-              class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-green-700 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
+              class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-orange-700 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
               @click="() => addVideo()"
             >
               Add Video
             </button>
             <button
+              type="submit"
               v-else
-              class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-green-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
+              class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-orange-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
               @click="() => checkURL()"
             >
               Check URL
             </button>
             <button
-              class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-gray-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
+              class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-gray-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
               @click="() => closeModal()"
             >
               Close
             </button>
           </div>
         </div>
-      </div>
+      </form>
     </Teleport>
-    <div class="fixed bottom-10 right-10 flex items-center justify-center">
-      <button
-        class="rounded-full bg-blue-200 px-4 py-2 text-xl text-gray-800 hover:bg-blue-400 hover:text-white"
-        @click="() => (isModalShown = true)"
-        title="Add New Video"
-      >
-        +
-      </button>
-    </div>
   </div>
 </template>
 
@@ -128,12 +114,13 @@
 import type { Course, Video } from '~/types/Types';
 import type { Database } from '~/types/database.types';
 const session = useSupabaseSession();
+const toast = useToast();
 
 const isModalShown = ref(false);
 const course = ref<Course>({
   title: '',
   tags: [],
-  videos: [],
+  video: [],
   description: '',
   user_id: session.value!.user.id,
 });
@@ -145,6 +132,8 @@ const initialVideo: Video = {
   title: '',
   course_id: '',
   user_id: session.value!.user.id,
+  is_watched: false,
+  row: 1,
 } as const;
 const tempVideo = ref<Video>({ ...initialVideo });
 
@@ -154,35 +143,52 @@ watch(tempURL, () => {
 
 function addVideo() {
   if (!tempVideo.value.thumbnail) return;
-  course.value?.videos.push(tempVideo.value);
+  course.value?.video.push(tempVideo.value);
   closeModal();
 }
 
 const client = useSupabaseClient<Database>();
 
 async function addCourse() {
-  if (!course.value.title || !course.value.title || !course.value.videos.length) return;
-  try {
-    const { data } = await client
-      .from('course')
-      .insert({
-        title: course.value.title,
-        description: course.value.description,
-        user_id: course.value.user_id,
-      })
-      .select()
-      .single();
+  if (!course.value.title) {
+    toast.add({ title: 'Please enter a Name for the course', color: 'red' });
+    return;
+  }
+  if (!course.value.description) {
+    toast.add({ title: 'Please enter a Description for the course', color: 'red' });
+    return;
+  }
+  if (!course.value.video.length) {
+    toast.add({ title: 'Please add some videos for the course', color: 'red' });
+    return;
+  }
+  const { data, error: courseError } = await client
+    .from('course')
+    .insert({
+      title: course.value.title,
+      description: course.value.description,
+      user_id: course.value.user_id,
+    })
+    .select()
+    .single();
 
-    if (data?.id) {
-      course.value.videos.map((vid) => (vid.course_id = data.id));
+  if (data?.id) {
+    course.value.video.map((vid, index) => {
+      vid.course_id = data.id;
+      vid.row = index + 1;
+    });
 
-      await client.from('video').insert(course.value.videos);
-    } else {
-      throw Error('Something went wrong');
+    const { error } = await client.from('video').insert(course.value.video);
+    if (error) {
+      await client.from('course').delete().eq('id', data.id);
+      toast.add({ title: error.message, color: 'red' });
+      return;
     }
     navigateTo('/courses');
-  } catch (error: unknown) {
-    console.error(error);
+  } else if (courseError) {
+    toast.add({ title: courseError.message, color: 'red' });
+  } else {
+    toast.add({ title: 'Something went wrong, please try again!', color: 'red' });
   }
 }
 
@@ -229,6 +235,8 @@ function checkURL() {
         tempVideo.value.source = 'vimeo';
         tempVideo.value.thumbnail = vimeoResult.thumbnail;
         tempVideo.value.title = vimeoResult.title;
+      } else {
+        toast.add({ title: 'Please enter a valid Youtube or Vimeo video', color: 'red' });
       }
     });
   }

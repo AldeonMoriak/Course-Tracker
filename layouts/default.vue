@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-w-360px mx-auto flex min-h-screen flex-col bg-gray-100 transition-all duration-500"
+    class="min-w-360px mx-auto flex min-h-screen flex-col bg-gray-100 text-black transition-all duration-500"
   >
     <nav class="bg-white px-4 py-2">
       <ul class="flex w-full gap-4 text-black">

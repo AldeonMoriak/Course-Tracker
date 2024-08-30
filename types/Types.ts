@@ -1,18 +1,14 @@
-export type Course = {
-  title: string;
-  tags?: Array<string>;
-  id?: string;
-  videos: Array<Video>;
-  description: string;
-  user_id: string;
-};
+import type { Database } from './database.types';
 
-export type Video = {
+export type Course = {
+  video: Video[];
+  tags?: Tag[];
+  created_at?: string;
   id?: string;
-  course_id: string;
-  video_id: string;
-  source: 'youtube' | 'vimeo';
-  thumbnail: string;
-  title: string;
-  user_id: string;
-};
+} & Omit<Database['public']['Tables']['course']['Row'], 'created_at' | 'id'>;
+
+export type Video = { id?: string; created_at?: string } & Omit<
+  Database['public']['Tables']['video']['Row'],
+  'created_at' | 'id'
+>;
+export type Tag = Database['public']['Tables']['tag']['Row'];

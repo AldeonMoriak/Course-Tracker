@@ -18,8 +18,12 @@ export default defineNuxtConfig({
         persistSession: true,
       },
     },
+    cookieOptions: {
+      secure: false,
+      sameSite: 'lax',
+    },
+    types: './types/database.types',
   },
 
   compatibilityDate: '2024-08-20',
 });
-

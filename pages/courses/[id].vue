@@ -3,7 +3,7 @@
     <div class="w-3/4">
       <div class="w-full">
         <div :key="selectedVideo?.id">
-          <vue-plyr ref="plyr">
+          <vue-plyr :key="selectedVideo?.id" ref="plyr">
             <div class="plyr__video-embed">
               <iframe
                 :src="
@@ -27,7 +27,7 @@
               id="default-checkbox"
               type="checkbox"
               @change="changeCheckbox"
-              :checked="selectedVideo.is_watched"
+              :checked="selectedVideo?.is_watched"
               class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
             />
             <label for="default-checkbox" class="ms-2 text-sm font-medium">Watched</label>
@@ -40,13 +40,41 @@
       </div>
     </div>
     <div class="h-screen w-1/4 bg-gray-100 p-4">
-      <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-5">
         <div
-          class="line-clamp-1 cursor-pointer text-lg font-normal hover:text-gray-700"
+          tabindex="0"
           v-for="(vid, index) in course?.video"
+          :title="vid.title ?? ''"
           @click="() => selectVideo(vid as any)"
+          :key="vid.id"
+          @keyup.enter="() => selectVideo(vid as any)"
+          class="relative flex cursor-pointer"
+          :class="{
+            'rounded-xl ring-4 ring-orange-400 ring-offset-2': selectedVideo?.id === vid.id,
+          }"
         >
-          {{ `${index + 1}- ${vid.title}` }}
+          <div
+            class="absolute top-0 h-full w-full rounded-xl bg-gradient-to-t from-orange-900/80 via-10% to-orange-400/0"
+          ></div>
+          <NuxtImg :src="vid.thumbnail!" class="rounded-xl" />
+          <svg
+            v-if="vid.is_watched"
+            class="absolute right-1 top-0 h-8 w-8"
+            xmlns="http://www.w3.org/2000/svg"
+            width="1em"
+            height="1em"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="#fb923c"
+              d="m23.5 17l-5 5l-3.5-3.5l1.5-1.5l2 2l3.5-3.5zM12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0 8c.5 0 .97-.07 1.42-.21c-.27.71-.42 1.43-.42 2.21v.45l-1 .05c-5 0-9.27-3.11-11-7.5c1.73-4.39 6-7.5 11-7.5s9.27 3.11 11 7.5c-.25.64-.56 1.26-.92 1.85c-.9-.54-1.96-.85-3.08-.85c-.78 0-1.5.15-2.21.42c.14-.45.21-.92.21-1.42a5 5 0 0 0-5-5a5 5 0 0 0-5 5a5 5 0 0 0 5 5"
+            />
+          </svg>
+          <div class="absolute bottom-2 left-2 text-lg text-white">
+            {{
+              `${index + 1}- ${vid.title?.length && vid.title.length > 23 ? vid.title?.slice(0, 20) + '...' : vid.title}`
+            }}
+          </div>
         </div>
       </div>
     </div>
@@ -60,10 +88,10 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import type { Database } from '~/types/database.types';
 
+const client = useSupabaseClient<Database>();
+
 const selectedVideo = ref();
 const route = useRoute();
-// get the course details
-console.log(route.params.id);
 
 const changeCheckbox = async (event: Event) => {
   if (!event || !event.target) return;
@@ -81,14 +109,21 @@ const changeIsWatched = async (isWatched: boolean) => {
   isSending.value = false;
 };
 
-const client = useSupabaseClient<Database>();
 const { data: course } = await client
   .from('course')
   .select('*, video(*)')
   .eq('id', route.params.id)
   .single();
 
-selectedVideo.value = course?.video.length ? course?.video[0] : undefined;
+if (course?.video.length) {
+  course?.video.sort((a, b) => a.row - b.row);
+  const unwatchedVideo = course.video.find((item) => !item.is_watched);
+  if (!unwatchedVideo) {
+    selectedVideo.value = course.video[0];
+  } else {
+    selectedVideo.value = unwatchedVideo;
+  }
+}
 
 const selectVideo = (video: Video) => {
   selectedVideo.value = video;

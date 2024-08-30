@@ -21,7 +21,10 @@ const signInWithOtp = async () => {
           : 'http://test-aldeon:3000/confirm',
     },
   });
-  if (error) return console.log(error);
+  if (error) {
+    toast.add({ title: error.message, color: 'red' });
+    return console.log(error);
+  }
   toast.add({ title: 'Please check your email for the magic link.' });
 };
 </script>

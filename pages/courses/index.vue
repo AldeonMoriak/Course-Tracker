@@ -5,6 +5,7 @@
         class="cursor-pointer"
         v-for="course in courses"
         @click="navigateTo(`/courses/${course.id}`)"
+        @keyup.enter="() => navigateTo(`/courses/${course.id}`)"
         :course="course"
       />
     </div>
@@ -33,4 +34,8 @@ const { data: courses } = await client
   .order('created_at', {
     ascending: false,
   });
+
+courses?.map((item) => {
+  item.video.sort((a, b) => a.row - b.row);
+});
 </script>
