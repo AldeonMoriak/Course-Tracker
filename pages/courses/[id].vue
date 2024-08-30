@@ -21,7 +21,7 @@
       </div>
       <div class="">
         <div class="flex items-center justify-between pb-5">
-          <div class="text-2xl font-bold text-black">{{ selectedVideo?.title }}</div>
+          <div class="text-2xl font-bold text-orange-900">{{ selectedVideo?.title }}</div>
           <div class="flex items-center">
             <input
               id="default-checkbox"
