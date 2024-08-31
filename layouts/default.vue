@@ -14,6 +14,16 @@
             >Courses</NuxtLink
           >
         </li>
+        <li>
+          <span
+            class="cursor-pointer"
+            tabindex="0"
+            v-if="user?.id"
+            @keyup.enter="exit"
+            @click="exit"
+            >Sign Out</span
+          >
+        </li>
       </ul>
     </nav>
     <div class="mx-auto mt-5 w-full max-w-6xl">
@@ -24,4 +34,12 @@
 
 <script setup lang="ts">
 const user = useSupabaseUser();
+const supabase = useSupabaseClient();
+
+const exit = async () => {
+  if (confirm('Are you sure you want to exit from your account?')) {
+    await supabase.auth.signOut();
+    navigateTo('/login');
+  }
+};
 </script>
