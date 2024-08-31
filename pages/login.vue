@@ -18,7 +18,7 @@ const signInWithOtp = async () => {
       emailRedirectTo:
         process.env.NODE_ENV === 'production'
           ? 'https://course-tracker.mirshekaran.ir/confirm'
-          : 'http://test-aldeon:3000/confirm',
+          : 'http://localhost:3000/confirm',
     },
   });
   if (error) {
