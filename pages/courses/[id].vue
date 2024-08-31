@@ -1,10 +1,10 @@
 <template>
-  <div class="flex w-full justify-between">
+  <div class="mb-5 flex w-full justify-between">
     <div class="w-3/4">
       <div class="w-full">
-        <template v-if="selectedVideo?.video_id" :key="selectedVideo?.id">
-          <ClientOnly>
-            <vue-plyr :key="selectedVideo?.id" ref="plyr">
+        <template v-if="selectedVideo?.video_id">
+          <ClientOnly :key="selectedVideo?.id">
+            <vue-plyr ref="plyr">
               <div class="plyr__video-embed">
                 <iframe
                   :src="
@@ -42,12 +42,11 @@
         <div v-else>No Video Selected</div>
       </div>
     </div>
-    <div class="h-screen w-1/4 bg-orange-50 px-4">
+    <div class="w-1/4 bg-orange-50 px-4">
       <div class="flex flex-col gap-5">
         <div
           tabindex="0"
           v-for="(vid, index) in openedCourse?.video"
-          :title="vid.title ?? ''"
           @click="() => selectVideo(vid as any)"
           :key="vid.id"
           @keyup.enter="() => selectVideo(vid as any)"
@@ -56,73 +55,75 @@
             ' ring-4 ring-orange-400 ring-offset-2': selectedVideo?.id === vid.id,
           }"
         >
-          <div
-            class="absolute top-0 h-full w-full rounded-xl bg-gradient-to-t from-orange-900/80 via-10% to-orange-400/0"
-          ></div>
-          <svg
-            tabindex="0"
-            class="absolute left-1 top-1 h-8 w-8 rounded-full hover:bg-orange-100 focus:bg-orange-100"
-            @click.stop="isModalShown = vid.id!"
-            @keyup.enter.stop="isModalShown = vid.id!"
-            xmlns="http://www.w3.org/2000/svg"
-            width="1em"
-            height="1em"
-            viewBox="0 0 20 20"
-          >
-            <g fill="#ff7800">
-              <circle cx="10" cy="15" r="2" />
-              <circle cx="10" cy="10" r="2" />
-              <circle cx="10" cy="5" r="2" />
-            </g>
-          </svg>
-          <div
-            ref="target"
-            v-if="isModalShown === vid.id"
-            class="absolute left-1 top-10 rounded bg-orange-50 px-4 py-2 text-orange-900"
-          >
+          <UTooltip :text="vid.title ?? ''">
             <div
-              @click.stop="() => handleClickEdit(vid)"
-              @keyup.enter.stop="() => handleClickEdit(vid)"
-              class="text-left"
+              class="absolute top-0 h-full w-full rounded-xl bg-gradient-to-t from-orange-900/80 via-10% to-orange-400/0"
+            ></div>
+            <svg
               tabindex="0"
+              class="absolute left-1 top-1 h-8 w-8 rounded-full hover:bg-orange-100 focus:bg-orange-100"
+              @click.stop="isModalShown = vid.id!"
+              @keyup.enter.stop="isModalShown = vid.id!"
+              xmlns="http://www.w3.org/2000/svg"
+              width="1em"
+              height="1em"
+              viewBox="0 0 20 20"
             >
-              Edit
-            </div>
+              <g fill="#ff7800">
+                <circle cx="10" cy="15" r="2" />
+                <circle cx="10" cy="10" r="2" />
+                <circle cx="10" cy="5" r="2" />
+              </g>
+            </svg>
             <div
-              @click.stop="() => handleClickDelete(vid)"
-              @keyup.enter.stop="() => handleClickDelete(vid)"
-              class="text-left"
-              tabindex="0"
+              ref="target"
+              v-if="isModalShown === vid.id"
+              class="absolute left-1 top-10 rounded bg-orange-50 px-4 py-2 text-orange-900"
             >
-              Delete
+              <div
+                @click.stop="() => handleClickEdit(vid)"
+                @keyup.enter.stop="() => handleClickEdit(vid)"
+                class="text-left"
+                tabindex="0"
+              >
+                Edit
+              </div>
+              <div
+                @click.stop="() => handleClickDelete(vid)"
+                @keyup.enter.stop="() => handleClickDelete(vid)"
+                class="text-left"
+                tabindex="0"
+              >
+                Delete
+              </div>
             </div>
-          </div>
-          <NuxtImg
-            placeholder-class="bg-orange-200 w-full h-full"
-            :src="vid.thumbnail!"
-            class="rounded-xl"
-          />
-          <svg
-            v-if="vid.is_watched"
-            class="absolute right-1 top-0 h-8 w-8"
-            xmlns="http://www.w3.org/2000/svg"
-            width="1em"
-            height="1em"
-            viewBox="0 0 24 24"
-          >
-            <path
-              fill="#fb923c"
-              d="m23.5 17l-5 5l-3.5-3.5l1.5-1.5l2 2l3.5-3.5zM12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0 8c.5 0 .97-.07 1.42-.21c-.27.71-.42 1.43-.42 2.21v.45l-1 .05c-5 0-9.27-3.11-11-7.5c1.73-4.39 6-7.5 11-7.5s9.27 3.11 11 7.5c-.25.64-.56 1.26-.92 1.85c-.9-.54-1.96-.85-3.08-.85c-.78 0-1.5.15-2.21.42c.14-.45.21-.92.21-1.42a5 5 0 0 0-5-5a5 5 0 0 0-5 5a5 5 0 0 0 5 5"
+            <NuxtImg
+              placeholder-class="bg-orange-200 w-full h-full"
+              :src="vid.thumbnail!"
+              class="rounded-xl"
             />
-          </svg>
-          <div class="absolute bottom-2 left-2 text-lg text-white">
-            {{
-              `${index + 1}- ${vid.title?.length && vid.title.length > 23 ? vid.title?.slice(0, 20) + '...' : vid.title}`
-            }}
-          </div>
+            <svg
+              v-if="vid.is_watched"
+              class="absolute right-1 top-0 h-8 w-8"
+              xmlns="http://www.w3.org/2000/svg"
+              width="1em"
+              height="1em"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="#fb923c"
+                d="m23.5 17l-5 5l-3.5-3.5l1.5-1.5l2 2l3.5-3.5zM12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0 8c.5 0 .97-.07 1.42-.21c-.27.71-.42 1.43-.42 2.21v.45l-1 .05c-5 0-9.27-3.11-11-7.5c1.73-4.39 6-7.5 11-7.5s9.27 3.11 11 7.5c-.25.64-.56 1.26-.92 1.85c-.9-.54-1.96-.85-3.08-.85c-.78 0-1.5.15-2.21.42c.14-.45.21-.92.21-1.42a5 5 0 0 0-5-5a5 5 0 0 0-5 5a5 5 0 0 0 5 5"
+              />
+            </svg>
+            <div class="absolute bottom-2 left-2 text-lg text-white">
+              {{
+                `${index + 1}- ${vid.title?.length && vid.title.length > 23 ? vid.title?.slice(0, 20) + '...' : vid.title}`
+              }}
+            </div>
+          </UTooltip>
         </div>
         <button
-          class="rounded-xl bg-orange-50 p-20 text-orange-600 outline-dashed outline-orange-200 hover:bg-orange-200 hover:outline-orange-500 focus:bg-orange-100 focus:outline-orange-400"
+          class="rounded-xl bg-orange-50 py-20 text-orange-600 outline-dashed outline-orange-200 hover:bg-orange-200 hover:outline-orange-500 focus:bg-orange-100 focus:outline-orange-400"
           @keyup.enter.stop="
             () => {
               isAddVideoModalShown = true;
@@ -283,8 +284,7 @@ const isSending = ref(false);
 const plyr = ref<{ player: Plyr } | null>(null);
 onMounted(async () => {
   await nextTick(() => {
-    //plyr.value!.player.on('ready', (event) => console.log('ready', event));
-    plyr.value!.player.on('timeupdate', (event) => {
+    plyr.value?.player.on('timeupdate', (event) => {
       const progress = event.detail.plyr.currentTime / event.detail.plyr.duration;
       if (
         selectedVideo.value &&

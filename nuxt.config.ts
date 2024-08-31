@@ -18,10 +18,6 @@ export default defineNuxtConfig({
         persistSession: true,
       },
     },
-    cookieOptions: {
-      secure: false,
-      sameSite: 'lax',
-    },
     types: './types/database.types',
   },
 
