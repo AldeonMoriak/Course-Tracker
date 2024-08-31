@@ -39,6 +39,7 @@ const supabase = useSupabaseClient();
 const exit = async () => {
   if (confirm('Are you sure you want to exit from your account?')) {
     await supabase.auth.signOut();
+    localStorage.clear();
     navigateTo('/login');
   }
 };
