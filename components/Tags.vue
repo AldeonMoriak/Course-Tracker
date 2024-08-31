@@ -2,7 +2,7 @@
   <div class="flex flex-wrap gap-2">
     <div
       v-for="tag in tags"
-      class="max-w-28 rounded bg-gray-300 px-1 py-0.5 font-thin text-orange-900"
+      class="max-w-28 rounded bg-orange-300 px-1 py-0.5 font-thin text-orange-900"
     >
       {{ tag.title }}
     </div>

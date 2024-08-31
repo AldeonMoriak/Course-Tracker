@@ -36,15 +36,15 @@ const signInWithOtp = async () => {
       class="inline-block max-h-screen transform overflow-y-auto overflow-x-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
     >
       <form @submit.prevent="signInWithOtp" class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-        <label class="block text-sm text-gray-600">
+        <label class="block text-sm text-orange-600">
           Email
           <input
             v-model="email"
             type="email"
-            class="block w-full rounded-md border-gray-300 bg-gray-100 px-4 py-2 text-gray-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            class="block w-full rounded-md border-orange-300 bg-orange-100 px-4 py-2 text-orange-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           />
         </label>
-        <div class="bg-gray-50 pb-6 pt-3 sm:flex sm:flex-row">
+        <div class="bg-orange-50 pb-6 pt-3 sm:flex sm:flex-row">
           <button
             type="submit"
             class="inline-flex w-full justify-center rounded-md border border-transparent bg-orange-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"

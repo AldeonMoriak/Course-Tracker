@@ -1,30 +1,30 @@
 <template>
   <div class="flex flex-col gap-4 bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-    <label class="block text-sm text-gray-600">
+    <label class="block text-sm text-orange-600">
       Course Name
       <input
         type="text"
         v-model="course.title"
-        class="block w-full rounded-md border-gray-300 bg-gray-100 px-4 py-2 text-gray-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        class="block w-full rounded-md border-orange-300 bg-orange-100 px-4 py-2 text-orange-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
       />
     </label>
-    <label class="block text-sm text-gray-600">
+    <label class="block text-sm text-orange-600">
       Course Description
       <textarea
         type="text"
         v-model="course.description"
-        class="block w-full rounded-md border-gray-300 bg-gray-100 px-4 py-2 text-gray-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        class="block w-full rounded-md border-orange-300 bg-orange-100 px-4 py-2 text-orange-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
       ></textarea>
     </label>
-    <!-- <label class="block text-sm text-gray-600"> -->
+    <!-- <label class="block text-sm text-orange-600"> -->
     <!--   Tags -->
     <!--   <input -->
     <!--     type="text" -->
     <!--     v-model="course.tags" -->
-    <!--     class="block w-full rounded-md border-gray-300 bg-gray-100 px-4 py-2 text-gray-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" -->
+    <!--     class="block w-full rounded-md border-orange-300 bg-orange-100 px-4 py-2 text-orange-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" -->
     <!--   /> -->
     <!-- </label> -->
-    <label class="text-sm text-gray-600"> Videos </label>
+    <label class="text-sm text-orange-600"> Videos </label>
     <div class="flex flex-wrap gap-4">
       <div
         class="w-72 rounded bg-blue-100 p-2"
@@ -35,9 +35,13 @@
         <div>{{ video.title }}</div>
       </div>
       <button
-        class="w-72 bg-orange-50 p-20 text-orange-600 outline-dashed outline-orange-200"
+        class="w-72 bg-orange-50 p-20 text-orange-600 outline-dashed outline-orange-200 hover:bg-orange-200 hover:outline-orange-500 focus:bg-orange-100 focus:outline-orange-400"
         :class="{ 'mx-auto': !course?.video?.length }"
-        @click="() => (isModalShown = true)"
+        @click="
+          () => {
+            isModalShown = true;
+          }
+        "
       >
         + Add Video
       </button>
@@ -48,65 +52,7 @@
     >
       Add Course
     </button>
-    <Teleport to="body">
-      <form @submit.prevent="tempVideo.thumbnail ? addVideo : checkURL" v-if="isModalShown">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-        <div class="fixed bottom-0 z-50 w-full bg-white">
-          <div class="mx-auto max-w-2xl">
-            <div class="h-10"></div>
-            <div class="flex flex-col gap-4">
-              <label class="block text-sm text-gray-600">
-                Video URL
-                <input
-                  type="url"
-                  v-model="tempURL"
-                  class="block w-full rounded-md border-gray-300 bg-gray-100 px-4 py-2 text-gray-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-              </label>
-              <template v-if="tempVideo.video_id">
-                <label class="block text-sm text-gray-600">
-                  Video Name
-                  <input
-                    type="url"
-                    v-model="tempVideo.title"
-                    class="block w-full rounded-md border-gray-300 bg-gray-100 px-4 py-2 text-gray-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  />
-                </label>
-                <label class="block text-sm text-gray-600">
-                  Video Thumbnail
-                  <img :src="tempVideo.thumbnail!" alt="video thumbnail" class="pt-4" />
-                </label>
-              </template>
-            </div>
-          </div>
-          <div class="h-20"></div>
-          <div class="mx-auto flex max-w-2xl gap-4">
-            <button
-              type="submit"
-              v-if="tempVideo.thumbnail"
-              class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-orange-700 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
-              @click="() => addVideo()"
-            >
-              Add Video
-            </button>
-            <button
-              type="submit"
-              v-else
-              class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-orange-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
-              @click="() => checkURL()"
-            >
-              Check URL
-            </button>
-            <button
-              class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-gray-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
-              @click="() => closeModal()"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </form>
-    </Teleport>
+    <AddVideo v-if="isModalShown" :close-modal="closeModal" :add-video="addVideo" />
   </div>
 </template>
 
@@ -124,26 +70,9 @@ const course = ref<Course>({
   description: '',
   user_id: session.value!.user.id,
 });
-const tempURL = ref('');
-const initialVideo: Video = {
-  video_id: '',
-  source: 'youtube',
-  thumbnail: '',
-  title: '',
-  course_id: '',
-  user_id: session.value!.user.id,
-  is_watched: false,
-  row: 1,
-} as const;
-const tempVideo = ref<Video>({ ...initialVideo });
 
-watch(tempURL, () => {
-  tempVideo.value = { ...initialVideo };
-});
-
-function addVideo() {
-  if (!tempVideo.value.thumbnail) return;
-  course.value?.video.push(tempVideo.value);
+function addVideo(tempVideo: Video) {
+  course.value?.video.push(tempVideo);
   closeModal();
 }
 
@@ -194,51 +123,7 @@ async function addCourse() {
 
 function closeModal() {
   isModalShown.value = false;
-  tempURL.value = '';
-  tempVideo.value = initialVideo;
-}
-
-function checkURL() {
-  function matchYoutubeUrl(url: string) {
-    var p =
-      /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-    if (url.match(p)) {
-      return url.match(p)![1];
-    }
-    return false;
-  }
-
-  async function matchVimeoUrl(url: string) {
-    const { data } = await useAsyncData('vimeo', async () =>
-      $fetch(`https://vimeo.com/api/oembed.json?url=${url}`)
-    );
-    const result = data.value as any;
-    if (result && result.video_id) {
-      return {
-        video_id: result.video_id,
-        thumbnail: result.thumbnail_url,
-        title: result.title,
-      };
-    }
-    return false;
-  }
-
-  const result = matchYoutubeUrl(tempURL.value);
-  if (result) {
-    tempVideo.value.video_id = result;
-    tempVideo.value.source = 'youtube';
-    tempVideo.value.thumbnail = `https://img.youtube.com/vi/${result}/mqdefault.jpg`;
-  } else {
-    matchVimeoUrl(tempURL.value).then((vimeoResult) => {
-      if (vimeoResult) {
-        tempVideo.value.video_id = vimeoResult.video_id;
-        tempVideo.value.source = 'vimeo';
-        tempVideo.value.thumbnail = vimeoResult.thumbnail;
-        tempVideo.value.title = vimeoResult.title;
-      } else {
-        toast.add({ title: 'Please enter a valid Youtube or Vimeo video', color: 'red' });
-      }
-    });
-  }
+  // tempURL.value = '';
+  // tempVideo.value = initialVideo;
 }
 </script>
