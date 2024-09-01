@@ -18,39 +18,76 @@
         },
       }"
     />
-    <!-- <nav class="mx-auto max-w-6xl bg-orange-50 px-4 py-2"> -->
-    <!--   <ul class="flex w-full gap-4 text-orange-900"> -->
-    <!--     <li> -->
-    <!--       <NuxtLink exact-active-class="underline text-orange-600" to="/">Home</NuxtLink> -->
-    <!--     </li> -->
-    <!--     <li> -->
-    <!--       <NuxtLink -->
-    <!--         :class="{ 'text-orange-600 underline': $route.path.startsWith('/courses') }" -->
-    <!--         to="/courses" -->
-    <!--         >Courses</NuxtLink -->
-    <!--       > -->
-    <!--     </li> -->
-    <!--     <li> -->
-    <!--       <span -->
-    <!--         class="cursor-pointer" -->
-    <!--         tabindex="0" -->
-    <!--         v-if="user?.id" -->
-    <!--         @keyup.enter="exit" -->
-    <!--         @click="exit" -->
-    <!--         >Sign Out</span -->
-    <!--       > -->
-    <!--     </li> -->
-    <!--   </ul> -->
-    <!-- </nav> -->
+    <UModal
+      v-model="isOpen"
+      prevent-close
+      :ui="{
+        overlay: { background: 'bg-primary-500/50 dark:bg-primary-500/50' },
+      }"
+    >
+      <UCard
+        :ui="{
+          ring: '',
+          divide: 'divide-y divide-primary-50 dark:divide-primary-50',
+          background: 'bg-white dark:bg-white',
+        }"
+      >
+        <template #header>
+          <div class="flex items-center justify-between">
+            <h3 class="text-primary-900 text-base font-semibold leading-6">Sign Out Modal</h3>
+            <UButton
+              color="primary"
+              variant="ghost"
+              icon="i-heroicons-x-mark-20-solid"
+              class="-my-1"
+              @click="isOpen = false"
+            />
+          </div>
+        </template>
+
+        <div class="text-primary-950">Are you sure you want to sign out from this website?</div>
+        <template #footer>
+          <div class="flex justify-between gap-2">
+            <UButton
+              color="red"
+              variant="solid"
+              @click="exit"
+              label="Yes"
+              icon="i-heroicons-check-20-solid"
+            />
+            <UButton
+              color="green"
+              variant="solid"
+              icon="i-heroicons-x-mark-20-solid"
+              @click="isOpen = false"
+              label="Close"
+            />
+          </div>
+        </template>
+      </UCard>
+    </UModal>
     <div class="mx-auto mt-5 w-full max-w-6xl">
       <NuxtPage />
     </div>
   </div>
+  <UNotifications />
 </template>
 
 <script setup lang="ts">
 const supabase = useSupabaseClient();
 const user = await supabase.auth.getUser();
+
+const isOpen = ref(false);
+
+defineShortcuts({
+  escape: {
+    usingInput: true,
+    whenever: [isOpen],
+    handler: () => {
+      isOpen.value = false;
+    },
+  },
+});
 
 useHead({
   title: 'Course Tracker',
@@ -58,11 +95,9 @@ useHead({
 });
 
 const exit = async () => {
-  if (confirm('Are you sure you want to exit from your account?')) {
-    await supabase.auth.signOut();
-    localStorage.clear();
-    navigateTo('/login');
-  }
+  await supabase.auth.signOut();
+  localStorage.clear();
+  navigateTo('/login');
 };
 
 const links = [
@@ -83,7 +118,7 @@ const links = [
     {
       label: 'Sign Out',
       icon: 'i-heroicons-arrow-right-on-rectangle-20-solid',
-      click: exit,
+      click: () => (isOpen.value = true),
     },
   ],
 ];
