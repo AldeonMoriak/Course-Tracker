@@ -47,7 +47,7 @@
       </button>
     </div>
     <button
-      class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-orange-700 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
+      class="mx-auto mb-3 mt-5 inline-flex w-full max-w-lg justify-center rounded-md border border-transparent bg-orange-700 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
       @click="() => addCourse()"
     >
       Add Course

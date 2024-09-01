@@ -23,14 +23,12 @@
             <div class="flex items-center justify-between pb-5">
               <div class="text-2xl font-bold text-orange-900">{{ selectedVideo?.title }}</div>
               <div class="flex items-center">
-                <input
-                  id="default-checkbox"
-                  type="checkbox"
+                <UCheckbox
+                  v-model="selectedVideo.is_watched"
+                  label="Watched"
                   @change="changeCheckbox"
-                  :checked="selectedVideo?.is_watched"
-                  class="h-4 w-4 rounded border-orange-300 bg-orange-50 text-orange-600 focus:ring-2 focus:ring-orange-500 dark:border-orange-600 dark:bg-orange-700 dark:ring-offset-orange-800 dark:focus:ring-orange-600"
+                  color="orange"
                 />
-                <label for="default-checkbox" class="ms-2 text-sm font-medium">Watched</label>
               </div>
             </div>
             <Tags :tags="['1', '2']" />
@@ -55,7 +53,7 @@
             ' ring-4 ring-orange-400 ring-offset-2': selectedVideo?.id === vid.id,
           }"
         >
-          <UTooltip :text="vid.title ?? ''">
+          <UTooltip :ui="{ width: 'max-w-full' }" :text="vid.title ?? ''">
             <div
               class="absolute top-0 h-full w-full rounded-xl bg-gradient-to-t from-orange-900/80 via-10% to-orange-400/0"
             ></div>
@@ -115,10 +113,8 @@
                 d="m23.5 17l-5 5l-3.5-3.5l1.5-1.5l2 2l3.5-3.5zM12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0 8c.5 0 .97-.07 1.42-.21c-.27.71-.42 1.43-.42 2.21v.45l-1 .05c-5 0-9.27-3.11-11-7.5c1.73-4.39 6-7.5 11-7.5s9.27 3.11 11 7.5c-.25.64-.56 1.26-.92 1.85c-.9-.54-1.96-.85-3.08-.85c-.78 0-1.5.15-2.21.42c.14-.45.21-.92.21-1.42a5 5 0 0 0-5-5a5 5 0 0 0-5 5a5 5 0 0 0 5 5"
               />
             </svg>
-            <div class="absolute bottom-2 left-2 text-lg text-white">
-              {{
-                `${index + 1}- ${vid.title?.length && vid.title.length > 23 ? vid.title?.slice(0, 20) + '...' : vid.title}`
-              }}
+            <div class="absolute bottom-2 left-2 max-w-60 truncate text-lg text-white">
+              {{ `${index + 1}- ${vid.title}` }}
             </div>
           </UTooltip>
         </div>
@@ -194,10 +190,12 @@ const toast = useToast();
 
 const client = useSupabaseClient<Database>();
 
+const { y } = useWindowScroll({ behavior: 'smooth' });
+
 const isModalShown = ref('');
 const isAddVideoModalShown = ref(false);
 const isEditModalShown = ref(false);
-const selectedVideo = ref();
+const selectedVideo = ref<Video>();
 const route = useRoute();
 
 const openedCourse = ref<Course>({
@@ -223,9 +221,8 @@ const initialVideo: Video = {
 
 const tempVideo = ref<Video>({ ...initialVideo });
 
-const changeCheckbox = async (event: Event) => {
-  if (!event || !event.target) return;
-  changeIsWatched((event.target as HTMLInputElement).checked);
+const changeCheckbox = async (event: boolean) => {
+  changeIsWatched(event);
 };
 
 async function addVideo(tempVideo: Video) {
@@ -243,9 +240,9 @@ const changeIsWatched = async (isWatched: boolean) => {
   const { error } = await client
     .from('video')
     .update({ is_watched: isWatched })
-    .eq('id', selectedVideo.value.id);
+    .eq('id', selectedVideo.value!.id!);
   if (!error) {
-    selectedVideo.value.is_watched = isWatched;
+    selectedVideo.value!.is_watched = isWatched;
   }
   isSending.value = false;
 };
@@ -278,6 +275,7 @@ fetchCourse();
 
 const selectVideo = (video: Video) => {
   selectedVideo.value = video;
+  y.value = 0;
 };
 
 const isSending = ref(false);
