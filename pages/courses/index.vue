@@ -5,20 +5,31 @@
       :class="[allCourses?.length ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1']"
     >
       <Card
+        :click="() => navigateTo(`/courses/${course.id}`)"
         :actions="[
-          {
-            title: 'Delete',
-            callback: handleClickDelete,
-          },
-          {
-            title: 'Edit',
-            callback: handleClickEdit,
-          },
+          [
+            {
+              label: 'Edit',
+              icon: 'i-heroicons-pencil-square-20-solid',
+              shortcuts: ['E'],
+              click: () => {
+                handleClickEdit(course);
+              },
+            },
+          ],
+          [
+            {
+              label: 'Delete',
+              icon: 'i-heroicons-trash-20-solid',
+              shortcuts: ['⌘', 'D'],
+              click: () => {
+                handleClickDelete(course);
+              },
+            },
+          ],
         ]"
         class="cursor-pointer"
         v-for="course in allCourses"
-        @click="navigateTo(`/courses/${course.id}`)"
-        @keyup.enter="() => navigateTo(`/courses/${course.id}`)"
         :course="course"
         :key="course.id"
       />

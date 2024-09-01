@@ -44,78 +44,109 @@
     <div class="w-full bg-orange-50 px-4 md:w-1/4">
       <div class="flex flex-col gap-5">
         <div
-          tabindex="0"
           v-for="(vid, index) in openedCourse?.video"
-          @click="() => selectVideo(vid as any)"
           :key="vid.id"
-          @keyup.enter="() => selectVideo(vid as any)"
           class="relative flex max-w-fit cursor-pointer rounded-xl focus:outline focus:outline-4 focus:outline-offset-2 focus:outline-orange-700"
           :class="{
             ' ring-4 ring-orange-400 ring-offset-2': selectedVideo?.id === vid.id,
           }"
         >
+          <UDropdown
+            class="absolute z-10"
+            :items="[
+              [
+                {
+                  label: 'Edit',
+                  icon: 'i-heroicons-pencil-square-20-solid',
+                  shortcuts: ['E'],
+                  click: () => {
+                    handleClickEdit(vid);
+                  },
+                },
+              ],
+              [
+                {
+                  label: 'Delete',
+                  icon: 'i-heroicons-trash-20-solid',
+                  shortcuts: ['⌘', 'D'],
+                  click: () => {
+                    handleClickDelete(vid);
+                  },
+                },
+              ],
+            ]"
+            :popper="{ placement: 'bottom' }"
+          >
+            <UButton variant="ghost" icon="i-heroicons-ellipsis-vertical-16-solid" />
+          </UDropdown>
           <UTooltip :ui="{ width: 'max-w-full' }" :text="vid.title ?? ''">
             <div
-              class="absolute top-0 h-full w-full rounded-xl bg-gradient-to-t from-orange-900/80 via-10% to-orange-400/0"
-            ></div>
-            <svg
               tabindex="0"
-              class="absolute left-1 top-1 h-8 w-8 rounded-full hover:bg-orange-100 focus:bg-orange-100"
-              @click.stop="isModalShown = vid.id!"
-              @keyup.enter.stop="isModalShown = vid.id!"
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              viewBox="0 0 20 20"
-            >
-              <g fill="#ff7800">
-                <circle cx="10" cy="15" r="2" />
-                <circle cx="10" cy="10" r="2" />
-                <circle cx="10" cy="5" r="2" />
-              </g>
-            </svg>
-            <div
-              ref="target"
-              v-if="isModalShown === vid.id"
-              class="absolute left-1 top-10 rounded bg-orange-50 px-4 py-2 text-orange-900"
+              @click="() => selectVideo(vid as any)"
+              @keyup.enter="() => selectVideo(vid as any)"
             >
               <div
-                @click.stop="() => handleClickEdit(vid)"
-                @keyup.enter.stop="() => handleClickEdit(vid)"
-                class="text-left"
-                tabindex="0"
-              >
-                Edit
-              </div>
-              <div
-                @click.stop="() => handleClickDelete(vid)"
-                @keyup.enter.stop="() => handleClickDelete(vid)"
-                class="text-left"
-                tabindex="0"
-              >
-                Delete
-              </div>
-            </div>
-            <NuxtImg
-              placeholder-class="bg-orange-200 w-full"
-              :src="vid.thumbnail!"
-              class="rounded-xl"
-            />
-            <svg
-              v-if="vid.is_watched"
-              class="absolute right-1 top-0 h-8 w-8"
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="#fb923c"
-                d="m23.5 17l-5 5l-3.5-3.5l1.5-1.5l2 2l3.5-3.5zM12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0 8c.5 0 .97-.07 1.42-.21c-.27.71-.42 1.43-.42 2.21v.45l-1 .05c-5 0-9.27-3.11-11-7.5c1.73-4.39 6-7.5 11-7.5s9.27 3.11 11 7.5c-.25.64-.56 1.26-.92 1.85c-.9-.54-1.96-.85-3.08-.85c-.78 0-1.5.15-2.21.42c.14-.45.21-.92.21-1.42a5 5 0 0 0-5-5a5 5 0 0 0-5 5a5 5 0 0 0 5 5"
+                class="absolute top-0 h-full w-full rounded-xl bg-gradient-to-t from-orange-900/80 via-10% to-orange-400/0"
+              ></div>
+              <!-- <svg -->
+              <!--   tabindex="0" -->
+              <!--   class="absolute left-1 top-1 h-8 w-8 rounded-full hover:bg-orange-100 focus:bg-orange-100" -->
+              <!--   @click.stop="isModalShown = vid.id!" -->
+              <!--   @keyup.enter.stop="isModalShown = vid.id!" -->
+              <!--   xmlns="http://www.w3.org/2000/svg" -->
+              <!--   width="1em" -->
+              <!--   height="1em" -->
+              <!--   viewBox="0 0 20 20" -->
+              <!-- > -->
+              <!--   <g fill="#ff7800"> -->
+              <!--     <circle cx="10" cy="15" r="2" /> -->
+              <!--     <circle cx="10" cy="10" r="2" /> -->
+              <!--     <circle cx="10" cy="5" r="2" /> -->
+              <!--   </g> -->
+              <!-- </svg> -->
+              <!-- <div -->
+              <!--   ref="target" -->
+              <!--   v-if="isModalShown === vid.id" -->
+              <!--   class="absolute left-1 top-10 rounded bg-orange-50 px-4 py-2 text-orange-900" -->
+              <!-- > -->
+              <!--   <div -->
+              <!--     @click.stop="() => handleClickEdit(vid)" -->
+              <!--     @keyup.enter.stop="() => handleClickEdit(vid)" -->
+              <!--     class="text-left" -->
+              <!--     tabindex="0" -->
+              <!--   > -->
+              <!--     Edit -->
+              <!--   </div> -->
+              <!--   <div -->
+              <!--     @click.stop="() => handleClickDelete(vid)" -->
+              <!--     @keyup.enter.stop="() => handleClickDelete(vid)" -->
+              <!--     class="text-left" -->
+              <!--     tabindex="0" -->
+              <!--   > -->
+              <!--     Delete -->
+              <!--   </div> -->
+              <!-- </div> -->
+              <NuxtImg
+                placeholder-class="bg-orange-200 w-full"
+                :src="vid.thumbnail!"
+                class="rounded-xl"
               />
-            </svg>
-            <div class="absolute bottom-2 left-0 max-w-full truncate px-2 text-lg text-white">
-              {{ `${index + 1}- ${vid.title}` }}
+              <svg
+                v-if="vid.is_watched"
+                class="absolute right-1 top-0 h-8 w-8"
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="#fb923c"
+                  d="m23.5 17l-5 5l-3.5-3.5l1.5-1.5l2 2l3.5-3.5zM12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0 8c.5 0 .97-.07 1.42-.21c-.27.71-.42 1.43-.42 2.21v.45l-1 .05c-5 0-9.27-3.11-11-7.5c1.73-4.39 6-7.5 11-7.5s9.27 3.11 11 7.5c-.25.64-.56 1.26-.92 1.85c-.9-.54-1.96-.85-3.08-.85c-.78 0-1.5.15-2.21.42c.14-.45.21-.92.21-1.42a5 5 0 0 0-5-5a5 5 0 0 0-5 5a5 5 0 0 0 5 5"
+                />
+              </svg>
+              <div class="absolute bottom-2 left-0 max-w-full truncate px-2 text-lg text-white">
+                {{ `${index + 1}- ${vid.title}` }}
+              </div>
             </div>
           </UTooltip>
         </div>
@@ -140,7 +171,7 @@
   <Teleport to="body">
     <form @submit.prevent="editVideo" v-if="isEditModalShown">
       <div class="fixed inset-0 bg-orange-500 bg-opacity-75 transition-opacity"></div>
-      <div class="fixed bottom-0 z-50 w-full bg-white">
+      <div class="fixed bottom-0 z-50 w-full bg-white px-2">
         <div class="mx-auto max-w-2xl">
           <div class="h-10"></div>
           <div class="flex flex-col gap-4">
@@ -156,19 +187,15 @@
           </div>
         </div>
         <div class="h-20"></div>
-        <div class="mx-auto flex max-w-2xl gap-4">
-          <button
+        <div class="mx-auto mb-5 flex max-w-2xl gap-4">
+          <UButton
+            :loading="isEditing"
             type="submit"
-            class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-orange-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
-          >
-            Edit
-          </button>
-          <button
-            class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent bg-orange-100 px-4 py-2 text-base font-medium text-orange-500 shadow-sm hover:bg-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
-            @click="() => closeModal()"
-          >
-            Close
-          </button>
+            color="primary"
+            variant="solid"
+            label="Edit"
+          />
+          <UButton variant="outline" @click="() => closeModal()" label="Close" />
         </div>
       </div>
     </form>
@@ -181,6 +208,7 @@
 </template>
 
 <script setup lang="ts">
+import type { UButton } from '#build/components';
 import type { Course, Video } from '@/types/Types';
 import type Plyr from 'plyr';
 import { ref } from 'vue';
@@ -193,7 +221,7 @@ const client = useSupabaseClient<Database>();
 
 const { y } = useWindowScroll({ behavior: 'smooth' });
 
-const isModalShown = ref('');
+const isEditing = ref(false);
 const isAddVideoModalShown = ref(false);
 const isEditModalShown = ref(false);
 const selectedVideo = ref<Video>();
@@ -330,12 +358,14 @@ async function editVideo() {
     closeModal();
     return;
   }
+  isEditing.value = true;
   const { error } = await client
     .from('video')
     .update({
       title: tempVideo.value.title,
     })
     .eq('id', tempVideo.value.id);
+  isEditing.value = false;
   if (error) {
     toast.add({ title: error.message, color: 'red' });
     return;

@@ -1,6 +1,14 @@
 <template>
-  <div tabindex="0" class="w-72 rounded bg-orange-200">
-    <div class="relative flex h-64 flex-col gap-y-2">
+  <div class="relative w-72 rounded bg-orange-200">
+    <UDropdown class="absolute z-10" :items="actions" :popper="{ placement: 'bottom' }">
+      <UButton variant="ghost" icon="i-heroicons-ellipsis-vertical-16-solid" />
+    </UDropdown>
+    <div
+      tabindex="0"
+      @keyup.enter.stop="click"
+      @click.stop="click"
+      class="relative flex h-64 flex-col gap-y-2"
+    >
       <div class="h-[70%]">
         <NuxtImg
           class="h-full w-full rounded-t object-cover"
@@ -10,37 +18,6 @@
         />
         <div v-else class="h-full w-full rounded-t bg-orange-300"></div>
         <UProgress :value="progress" />
-      </div>
-      <svg
-        tabindex="0"
-        class="absolute left-1 top-1 h-8 w-8 rounded-full hover:bg-orange-100 focus:bg-orange-100"
-        @click.stop="isModalShown = !isModalShown"
-        @keyup.enter.stop="isModalShown = !isModalShown"
-        xmlns="http://www.w3.org/2000/svg"
-        width="1em"
-        height="1em"
-        viewBox="0 0 20 20"
-      >
-        <g fill="#ff7800">
-          <circle cx="10" cy="15" r="2" />
-          <circle cx="10" cy="10" r="2" />
-          <circle cx="10" cy="5" r="2" />
-        </g>
-      </svg>
-      <div
-        ref="target"
-        v-if="isModalShown"
-        class="absolute left-1 top-10 rounded bg-orange-50 px-4 py-2 text-orange-900"
-      >
-        <div
-          v-for="action in actions"
-          @click.stop="() => action.callback(course)"
-          @keyup.enter.stop="() => action.callback(course)"
-          class="text-left"
-          tabindex="0"
-        >
-          {{ action.title }}
-        </div>
       </div>
       <svg
         v-if="course.video.every((item) => item.is_watched)"
@@ -69,9 +46,11 @@
 
 <script setup lang="ts">
 import type { Course } from '@/types/Types';
+import type { DropdownItem } from '../node_modules/@nuxt/ui/dist/runtime/types/index.d.ts';
 const props = defineProps<{
   course: Course;
-  actions: { title: string; callback: (course: Course) => void }[];
+  actions: DropdownItem[][];
+  click: () => void;
 }>();
 const isModalShown = ref(false);
 const target = ref(null);
@@ -86,5 +65,4 @@ const progress = computed(() => {
   }
   return 0;
 });
-console.log(progress.value);
 </script>
