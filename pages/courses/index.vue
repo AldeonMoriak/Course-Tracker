@@ -2,7 +2,7 @@
   <div>
     <div
       class="grid justify-items-center gap-4"
-      :class="[allCourses?.length ? 'grid-cols-3' : 'grid-cols-1']"
+      :class="[allCourses?.length ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1']"
     >
       <Card
         :actions="[

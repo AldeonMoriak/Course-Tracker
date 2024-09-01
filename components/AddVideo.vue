@@ -2,7 +2,7 @@
   <Teleport to="body">
     <form @submit.prevent="submit">
       <div class="fixed inset-0 bg-orange-500 bg-opacity-75 transition-opacity"></div>
-      <div class="fixed bottom-0 z-50 w-full bg-white">
+      <div class="fixed bottom-0 z-50 w-full bg-white px-2">
         <div class="mx-auto max-w-2xl">
           <div class="h-10"></div>
           <div class="flex flex-col gap-4">
@@ -12,7 +12,7 @@
                 ref="videoUrlRef"
                 type="url"
                 v-model="tempURL"
-                class="block w-full rounded-md border-orange-300 bg-orange-100 px-4 py-2 text-orange-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                class="mt-2 block w-full rounded-md border-orange-300 bg-orange-100 px-4 py-2 text-orange-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
             </label>
             <template v-if="tempVideo.video_id">
@@ -35,7 +35,7 @@
         <div class="mx-auto flex max-w-2xl gap-4">
           <button
             type="submit"
-            class="mb-3 inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
+            class="min-w-sm mb-3 inline-flex w-full max-w-lg justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
             :class="[tempVideo.thumbnail ? 'bg-orange-700' : 'bg-orange-500']"
           >
             {{ tempVideo.thumbnail ? 'Add Video' : 'Check URL' }}
@@ -120,7 +120,10 @@ function checkURL() {
     return false;
   }
 
-  console.log('is check url');
+  if (!tempURL.value) {
+    toast.add({ title: 'Please enter a valid Youtube or Vimeo video', color: 'red' });
+    return;
+  }
   const result = matchYoutubeUrl(tempURL.value);
   if (result) {
     tempVideo.value.video_id = result;

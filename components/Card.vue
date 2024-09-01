@@ -1,13 +1,16 @@
 <template>
   <div tabindex="0" class="w-72 rounded bg-orange-200">
-    <div class="relative flex h-64 flex-col gap-y-4">
-      <NuxtImg
-        class="h-[80%] w-full rounded object-cover"
-        v-if="course.video.length"
-        :src="course.video[0].thumbnail ?? undefined"
-        fit="cover"
-      />
-      <div v-else class="h-[80%] w-full rounded bg-orange-300"></div>
+    <div class="relative flex h-64 flex-col gap-y-2">
+      <div class="h-[70%]">
+        <NuxtImg
+          class="h-full w-full rounded-t object-cover"
+          v-if="course.video.length"
+          :src="course.video[0].thumbnail ?? undefined"
+          fit="cover"
+        />
+        <div v-else class="h-full w-full rounded-t bg-orange-300"></div>
+        <UProgress :value="progress" />
+      </div>
       <svg
         tabindex="0"
         class="absolute left-1 top-1 h-8 w-8 rounded-full hover:bg-orange-100 focus:bg-orange-100"
@@ -73,4 +76,15 @@ const props = defineProps<{
 const isModalShown = ref(false);
 const target = ref(null);
 onClickOutside(target, () => (isModalShown.value = false));
+
+const progress = computed(() => {
+  if (props.course.video.length) {
+    return (
+      (props.course.video.filter((item) => item.is_watched).length / props.course.video.length) *
+      100
+    );
+  }
+  return 0;
+});
+console.log(progress.value);
 </script>
