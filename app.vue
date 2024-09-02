@@ -74,6 +74,7 @@
 </template>
 
 <script setup lang="ts">
+import type { HorizontalNavigationLink } from './node_modules/@nuxt/ui/dist/runtime/types/index.d.ts';
 const supabase = useSupabaseClient();
 const user = await supabase.auth.getUser();
 
@@ -101,28 +102,30 @@ const exit = async () => {
   navigateTo('/login');
 };
 
-const links = computed(() => [
-  [
-    {
-      label: 'Home',
-      icon: 'i-heroicons-home',
-      to: '/',
-      class: 'text-orange-900',
-    },
-    {
-      label: 'Courses',
-      icon: 'i-heroicons-film',
-      to: '/courses',
-    },
-  ],
-  user.data.user?.id
-    ? [
-        {
-          label: 'Sign Out',
-          icon: 'i-heroicons-arrow-right-on-rectangle-20-solid',
-          click: () => (isOpen.value = true),
-        },
-      ]
-    : null,
-]);
+const links = computed(() => {
+  const list: HorizontalNavigationLink[][] = [
+    [
+      {
+        label: 'Home',
+        icon: 'i-heroicons-home',
+        to: '/',
+      },
+      {
+        label: 'Courses',
+        icon: 'i-heroicons-film',
+        to: '/courses',
+      },
+    ],
+  ];
+  if (user.data.user?.id) {
+    list.push([
+      {
+        label: 'Sign Out',
+        icon: 'i-heroicons-arrow-right-on-rectangle-20-solid',
+        click: () => (isOpen.value = true),
+      },
+    ]);
+  }
+  return list;
+});
 </script>

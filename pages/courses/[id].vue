@@ -2,6 +2,9 @@
   <div class="mb-5 flex w-full flex-col justify-between px-1 md:flex-row">
     <div class="mb-5 w-full md:w-3/4">
       <div class="w-full">
+        <div class="flex">
+          <USkeleton class="h-[80%] w-full" />
+        </div>
         <template v-if="selectedVideo?.video_id">
           <ClientOnly :key="selectedVideo?.id">
             <vue-plyr ref="plyr">
@@ -89,46 +92,10 @@
               <div
                 class="absolute top-0 h-full w-full rounded-xl bg-gradient-to-t from-orange-900/80 via-10% to-orange-400/0"
               ></div>
-              <!-- <svg -->
-              <!--   tabindex="0" -->
-              <!--   class="absolute left-1 top-1 h-8 w-8 rounded-full hover:bg-orange-100 focus:bg-orange-100" -->
-              <!--   @click.stop="isModalShown = vid.id!" -->
-              <!--   @keyup.enter.stop="isModalShown = vid.id!" -->
-              <!--   xmlns="http://www.w3.org/2000/svg" -->
-              <!--   width="1em" -->
-              <!--   height="1em" -->
-              <!--   viewBox="0 0 20 20" -->
-              <!-- > -->
-              <!--   <g fill="#ff7800"> -->
-              <!--     <circle cx="10" cy="15" r="2" /> -->
-              <!--     <circle cx="10" cy="10" r="2" /> -->
-              <!--     <circle cx="10" cy="5" r="2" /> -->
-              <!--   </g> -->
-              <!-- </svg> -->
-              <!-- <div -->
-              <!--   ref="target" -->
-              <!--   v-if="isModalShown === vid.id" -->
-              <!--   class="absolute left-1 top-10 rounded bg-orange-50 px-4 py-2 text-orange-900" -->
-              <!-- > -->
-              <!--   <div -->
-              <!--     @click.stop="() => handleClickEdit(vid)" -->
-              <!--     @keyup.enter.stop="() => handleClickEdit(vid)" -->
-              <!--     class="text-left" -->
-              <!--     tabindex="0" -->
-              <!--   > -->
-              <!--     Edit -->
-              <!--   </div> -->
-              <!--   <div -->
-              <!--     @click.stop="() => handleClickDelete(vid)" -->
-              <!--     @keyup.enter.stop="() => handleClickDelete(vid)" -->
-              <!--     class="text-left" -->
-              <!--     tabindex="0" -->
-              <!--   > -->
-              <!--     Delete -->
-              <!--   </div> -->
-              <!-- </div> -->
               <NuxtImg
-                placeholder-class="bg-orange-200 w-full"
+                :placeholder="[50, 25, 75, 5]"
+                width="300"
+                height="200"
                 :src="vid.thumbnail!"
                 class="rounded-xl"
               />
@@ -293,15 +260,15 @@ const fetchCourse = async () => {
       selectedVideo.value = unwatchedVideo;
     }
 
-    useHead({
-      title: `${course.title} Course - Course Tracker`,
-      meta: [{ name: 'description', content: course.description }],
-    });
     openedCourse.value = course;
   }
 };
 
 fetchCourse();
+useHead({
+  title: `${openedCourse.value.title} Course - Course Tracker`,
+  meta: [{ name: 'description', content: openedCourse.value.description }],
+});
 
 const selectVideo = (video: Video) => {
   selectedVideo.value = video;

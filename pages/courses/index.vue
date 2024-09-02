@@ -1,9 +1,12 @@
 <template>
   <div>
-    <div
-      class="grid justify-items-center gap-4"
-      :class="[allCourses?.length ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1']"
-    >
+    <div class="grid grid-cols-1 justify-items-center gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div v-if="isLoading && !allCourses.length" class="flex flex-col space-y-4">
+        <USkeleton class="h-[80%] w-full" />
+        <div class="space-y-2">
+          <USkeleton class="h-4 w-[250px]" />
+        </div>
+      </div>
       <Card
         :click="() => navigateTo(`/courses/${course.id}`)"
         :actions="[
@@ -116,6 +119,8 @@ const isModalShown = ref(false);
 const titleRef = ref(null);
 const { focused } = useFocus(titleRef);
 
+const isLoading = ref(false);
+
 const allCourses = ref<Course[]>([]);
 const initialCourse: Course = {
   title: '',
@@ -183,6 +188,7 @@ async function editCourse() {
 const client = useSupabaseClient<Database>();
 
 const fetchCourses = async () => {
+  isLoading.value = true;
   const { data: courses } = await client
     .from('course')
     .select('*, video(*)')
@@ -195,6 +201,7 @@ const fetchCourses = async () => {
     item.video.sort((a, b) => a.row - b.row);
   });
   allCourses.value = courses as Course[];
+  isLoading.value = false;
 };
 
 fetchCourses();
