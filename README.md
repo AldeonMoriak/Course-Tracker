@@ -95,6 +95,7 @@ With the Course Tracker app deployed and the database tables created, you can st
 - Tailwindcss
 - Nuxt UI
 - Plyr (Vue Plyr)
+- TypeScript (Of Course!)
 
 ## Acknowledgments
 
