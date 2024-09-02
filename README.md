@@ -97,6 +97,13 @@ With the Course Tracker app deployed and the database tables created, you can st
 - Plyr (Vue Plyr)
 - TypeScript (Of Course!)
 
+## Development
+
+If you want to change something in this repository, feel free to do it. For that you need to add a `.env` file containing these two keys:
+
+- `SUPABASE_URL`: Your Supabase URL.
+- `SUPABASE_KEY`: Your Supabase anonymous key.
+
 ## Acknowledgments
 
 - Thanks to the [Cloudflare](https://cloudflare.com/) and [Supabase](https://supabase.com/) teams for their amazing services.
