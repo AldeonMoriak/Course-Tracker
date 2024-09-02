@@ -92,7 +92,7 @@ defineShortcuts({
 
 useHead({
   title: 'Course Tracker',
-  meta: [{ name: 'description', content: 'A site to manage your learning courses' }],
+  meta: [{ name: 'description', content: 'A website to track and organize YouTube videos into courses for easier learning.' }],
 });
 
 const exit = async () => {
