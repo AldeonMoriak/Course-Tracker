@@ -189,18 +189,23 @@ const client = useSupabaseClient<Database>();
 
 const fetchCourses = async () => {
   isLoading.value = true;
-  const { data: courses } = await client
-    .from('course')
-    .select('*, video(*)')
-    .eq('user_id', session.value!.user.id)
-    .order('created_at', {
-      ascending: false,
-    });
 
-  courses?.map((item) => {
-    item.video.sort((a, b) => a.row - b.row);
-  });
-  allCourses.value = courses as Course[];
+  const { data: courses } = await useAsyncData('courses', async () =>
+    client
+      .from('course')
+      .select('*, video(*)')
+      .eq('user_id', session.value!.user.id)
+      .order('created_at', {
+        ascending: false,
+      })
+  );
+
+  if (courses.value?.data?.length) {
+    courses.value.data.map((item) => {
+      item.video.sort((a, b) => a.row - b.row);
+    });
+    allCourses.value = courses.value.data as Course[];
+  }
   isLoading.value = false;
 };
 

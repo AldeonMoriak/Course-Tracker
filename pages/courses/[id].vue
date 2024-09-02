@@ -35,7 +35,7 @@
                 />
               </div>
             </div>
-            <Tags :tags="['1', '2']" />
+            <!-- <Tags :tags="['1', '2']" /> -->
           </div>
           <div class="">
             <div>{{ openedCourse?.description }}</div>
@@ -231,6 +231,9 @@ async function addVideo(tempVideo: Video) {
   const { error } = await client.from('video').insert(tmp).single();
   openedCourse.value?.video.push(tmp);
   isAddVideoModalShown.value = false;
+  if (!error) {
+    toast.add({ title: 'Video added successfully.', color: 'green' });
+  }
 }
 
 const changeIsWatched = async (isWatched: boolean) => {
@@ -245,22 +248,20 @@ const changeIsWatched = async (isWatched: boolean) => {
 };
 
 const fetchCourse = async () => {
-  const { data: course } = await client
-    .from('course')
-    .select('*, video(*)')
-    .eq('id', route.params.id)
-    .single();
+  const { data: course } = await useAsyncData('course', async () =>
+    client.from('course').select('*, video(*)').eq('id', route.params.id).single()
+  );
 
-  if (course?.video.length) {
-    course?.video.sort((a, b) => a.row - b.row);
-    const unwatchedVideo = course.video.find((item) => !item.is_watched);
+  if (course.value?.data?.video?.length) {
+    course.value.data.video.sort((a, b) => a.row - b.row);
+    const unwatchedVideo = course.value.data.video.find((item) => !item.is_watched);
     if (!unwatchedVideo) {
-      selectedVideo.value = course.video[0];
+      selectedVideo.value = course.value.data.video[0];
     } else {
       selectedVideo.value = unwatchedVideo;
     }
 
-    openedCourse.value = course;
+    openedCourse.value = course.value.data;
   }
 };
 
