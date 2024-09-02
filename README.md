@@ -81,7 +81,9 @@ create table
 
 These queries will create the necessary `course` and `video` tables in your Supabase project. The tables are designed to store data related to course and video for your Course Tracker web app. Make sure to set up the appropriate relationships and constraints between these tables as specified in the queries.
 
-Please set [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security) for your tables if you use it alongside other users.
+
+> [!CAUTION]
+> Please set [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security) for your tables if you use it alongside other users.
 
 ## Usage
 
