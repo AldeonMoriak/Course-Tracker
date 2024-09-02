@@ -46,10 +46,7 @@
         <div
           v-for="(vid, index) in openedCourse?.video"
           :key="vid.id"
-          class="relative flex max-w-fit cursor-pointer rounded-xl focus:outline focus:outline-4 focus:outline-offset-2 focus:outline-orange-700"
-          :class="{
-            ' ring-4 ring-orange-400 ring-offset-2': selectedVideo?.id === vid.id,
-          }"
+          class="relative flex max-w-fit rounded-xl"
         >
           <UDropdown
             class="absolute z-10"
@@ -84,6 +81,10 @@
               tabindex="0"
               @click="() => selectVideo(vid as any)"
               @keyup.enter="() => selectVideo(vid as any)"
+              class="cursor-pointer focus:outline focus:outline-4 focus:outline-offset-2 focus:outline-orange-700"
+              :class="{
+                ' ring-4 ring-orange-400 ring-offset-2': selectedVideo?.id === vid.id,
+              }"
             >
               <div
                 class="absolute top-0 h-full w-full rounded-xl bg-gradient-to-t from-orange-900/80 via-10% to-orange-400/0"

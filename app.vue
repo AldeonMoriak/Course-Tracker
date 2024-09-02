@@ -47,17 +47,17 @@
 
         <div class="text-primary-950">Are you sure you want to sign out from this website?</div>
         <template #footer>
-          <div class="flex justify-between gap-2">
+          <div class="flex gap-2">
             <UButton
-              color="red"
+              color="primary"
               variant="solid"
               @click="exit"
               label="Yes"
               icon="i-heroicons-check-20-solid"
             />
             <UButton
-              color="green"
-              variant="solid"
+              color="primary"
+              variant="outline"
               icon="i-heroicons-x-mark-20-solid"
               @click="isOpen = false"
               label="Close"
@@ -96,11 +96,12 @@ useHead({
 
 const exit = async () => {
   await supabase.auth.signOut();
+  isOpen.value = false;
   localStorage.clear();
   navigateTo('/login');
 };
 
-const links = [
+const links = computed(() => [
   [
     {
       label: 'Home',
@@ -114,12 +115,14 @@ const links = [
       to: '/courses',
     },
   ],
-  [
-    {
-      label: 'Sign Out',
-      icon: 'i-heroicons-arrow-right-on-rectangle-20-solid',
-      click: () => (isOpen.value = true),
-    },
-  ],
-];
+  user.data.user?.id
+    ? [
+        {
+          label: 'Sign Out',
+          icon: 'i-heroicons-arrow-right-on-rectangle-20-solid',
+          click: () => (isOpen.value = true),
+        },
+      ]
+    : null,
+]);
 </script>

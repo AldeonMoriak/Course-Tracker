@@ -4,6 +4,7 @@ const email = ref('');
 
 const user = useSupabaseUser();
 const toast = useToast();
+const isLoading = ref(false);
 
 if (user.value) navigateTo('/');
 
@@ -12,6 +13,7 @@ const signInWithOtp = async () => {
     toast.add({ title: 'Please enter a valid email' });
     return;
   }
+  isLoading.value = true;
   const { error } = await supabase.auth.signInWithOtp({
     email: email.value,
     options: {
@@ -21,6 +23,7 @@ const signInWithOtp = async () => {
           : 'http://localhost:3000/confirm',
     },
   });
+  isLoading.value = false;
   if (error) {
     toast.add({ title: error.message, color: 'red' });
     return console.log(error);
@@ -28,6 +31,7 @@ const signInWithOtp = async () => {
   toast.add({ title: 'Please check your email for the magic link.' });
 };
 </script>
+
 <template>
   <div
     class="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0"
@@ -45,12 +49,7 @@ const signInWithOtp = async () => {
           />
         </label>
         <div class="bg-orange-50 pb-6 pt-3 sm:flex sm:flex-row">
-          <button
-            type="submit"
-            class="inline-flex w-full justify-center rounded-md border border-transparent bg-orange-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
-          >
-            Sign In with E-Mail
-          </button>
+          <UButton variant="solid" type="submit" :loading="isLoading" label="Sign In with E-Mail" />
         </div>
       </form>
     </div>
