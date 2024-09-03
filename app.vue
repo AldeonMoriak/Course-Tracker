@@ -76,7 +76,7 @@
 <script setup lang="ts">
 import type { HorizontalNavigationLink } from './node_modules/@nuxt/ui/dist/runtime/types/index.d.ts';
 const supabase = useSupabaseClient();
-const user = await supabase.auth.getUser();
+const user = useSupabaseUser();
 
 const isOpen = ref(false);
 
@@ -92,7 +92,12 @@ defineShortcuts({
 
 useHead({
   title: 'Course Tracker',
-  meta: [{ name: 'description', content: 'A website to track and organize YouTube videos into courses for easier learning.' }],
+  meta: [
+    {
+      name: 'description',
+      content: 'A website to track and organize YouTube videos into courses for easier learning.',
+    },
+  ],
 });
 
 const exit = async () => {
@@ -117,7 +122,7 @@ const links = computed(() => {
       },
     ],
   ];
-  if (user.data.user?.id) {
+  if (user.value?.id) {
     list.push([
       {
         label: 'Sign Out',

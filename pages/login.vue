@@ -47,7 +47,7 @@ const signInWithOtp = async () => {
           />
         </label>
         <div class="bg-orange-50 pb-6 pt-3 sm:flex sm:flex-row">
-          <UButton variant="solid" type="submit" :loading="isLoading" label="Sign In with E-Mail" />
+          <UButton variant="solid" type="submit" :loading="isLoading" label="Send Magic Link" />
         </div>
       </form>
     </div>
