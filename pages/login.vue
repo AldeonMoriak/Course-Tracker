@@ -33,9 +33,7 @@ const signInWithOtp = async () => {
 </script>
 
 <template>
-  <div
-    class="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0"
-  >
+  <div class="flex items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
     <div
       class="inline-block max-h-screen transform overflow-y-auto overflow-x-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
     >
