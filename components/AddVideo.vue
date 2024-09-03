@@ -10,6 +10,7 @@
               Video URL
               <input
                 ref="videoUrlRef"
+                placeholder="YouTube or Vimeo video url"
                 type="url"
                 v-model="tempURL"
                 class="mt-2 block w-full rounded-md border-orange-300 bg-orange-100 px-4 py-2 text-orange-600 shadow-inner focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
