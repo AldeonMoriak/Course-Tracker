@@ -223,9 +223,11 @@ const changeCheckbox = async (event: boolean) => {
 };
 
 async function addVideo(tempVideo: Video) {
+  const videoNumber = openedCourse.value.video.length
+  const row = videoNumber ? openedCourse.value.video[videoNumber - 1].row + 1 : 1
   const tmp = {
     ...tempVideo,
-    row: openedCourse.value.video.length + 1,
+    row,
     course_id: openedCourse.value.id!,
   };
   const { error } = await client.from('video').insert(tmp).single();
