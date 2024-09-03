@@ -9,7 +9,6 @@ watch(
   () => {
     if (user.value) {
       // Clear cookie
-      console.log(cookieName, redirectPath);
       useCookie(`${cookieName}-redirect-path`).value = null;
       // Redirect to path
       return navigateTo(redirectPath || '/');

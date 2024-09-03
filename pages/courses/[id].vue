@@ -5,23 +5,13 @@
         <div class="flex">
           <USkeleton class="h-[80%] w-full" />
         </div>
-        <template v-if="selectedVideo?.video_id">
-          <ClientOnly :key="selectedVideo?.id">
-            <vue-plyr ref="plyr">
-              <div class="plyr__video-embed">
-                <iframe
-                  :src="
-                    selectedVideo?.source === 'youtube'
-                      ? `https://www.youtube.com/embed/${selectedVideo?.video_id}?amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1`
-                      : `https://player.vimeo.com/video/${selectedVideo?.video_id}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media`
-                  "
-                  allowfullscreen
-                  allowtransparency
-                  allow="autoplay"
-                ></iframe>
-              </div>
-            </vue-plyr>
-          </ClientOnly>
+        <template v-if="selectedVideo?.video_id" :key="selectedVideo?.id">
+          <VideoPlayer
+            :key="selectedVideo.id"
+            :selected-video="selectedVideo"
+            :is-sending="isSending"
+            @make-video-watched="updateIsWatched"
+          />
           <div class="">
             <div class="flex items-center justify-between pb-5">
               <div class="text-2xl font-bold text-orange-900">{{ selectedVideo?.title }}</div>
@@ -178,7 +168,6 @@
 <script setup lang="ts">
 import type { UButton } from '#build/components';
 import type { Course, Video } from '@/types/Types';
-import type Plyr from 'plyr';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import type { Database } from '~/types/database.types';
@@ -222,9 +211,13 @@ const changeCheckbox = async (event: boolean) => {
   changeIsWatched(event);
 };
 
+const updateIsWatched = () => {
+  changeIsWatched(true);
+};
+
 async function addVideo(tempVideo: Video) {
-  const videoNumber = openedCourse.value.video.length
-  const row = videoNumber ? openedCourse.value.video[videoNumber - 1].row + 1 : 1
+  const videoNumber = openedCourse.value.video.length;
+  const row = videoNumber ? openedCourse.value.video[videoNumber - 1].row + 1 : 1;
   const tmp = {
     ...tempVideo,
     row,
@@ -239,6 +232,7 @@ async function addVideo(tempVideo: Video) {
 }
 
 const changeIsWatched = async (isWatched: boolean) => {
+  isSending.value = true;
   const { error } = await client
     .from('video')
     .update({ is_watched: isWatched })
@@ -279,23 +273,6 @@ const selectVideo = (video: Video) => {
 };
 
 const isSending = ref(false);
-const plyr = ref<{ player: Plyr } | null>(null);
-onMounted(async () => {
-  await nextTick(() => {
-    plyr.value?.player.on('timeupdate', (event) => {
-      const progress = event.detail.plyr.currentTime / event.detail.plyr.duration;
-      if (
-        selectedVideo.value &&
-        progress > 0.95 &&
-        !selectedVideo.value.is_watched &&
-        !isSending.value
-      ) {
-        isSending.value = true;
-        changeIsWatched(true);
-      }
-    });
-  });
-});
 
 const handleClickEdit = async (video: Video) => {
   tempVideo.value = { ...video };
